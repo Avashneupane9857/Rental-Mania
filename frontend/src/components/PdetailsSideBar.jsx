@@ -53,9 +53,9 @@ function PdetailsSideBar() {
                 {data.title}
               </h1>
             </div>
-            {col2.map((data) => (
-              <div key={data.id} className="relative top-40 flex gap-5"></div>
-            ))}
+            {/* {col2.map((data) => (
+           
+            ))} */}
           </div>
         ))}
       </div>
