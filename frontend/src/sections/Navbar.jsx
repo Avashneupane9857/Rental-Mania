@@ -9,6 +9,7 @@ function Navbar() {
         {" "}
         <SearchBar />
       </div>
+      <div className="h-[1px] relative top-16 w-[100%] bg-slate-400 opacity-20"></div>
     </div>
   );
 }
