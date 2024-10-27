@@ -6,7 +6,10 @@ function TopNavbar() {
   return (
     <div className="relative top-6 flex justify-between  ">
       <div>
-        <img className="w-[100px] h-8" src={logo} alt="" />
+        <a href="/">
+          {" "}
+          <img className="w-[100px] h-8" src={logo} alt="" />
+        </a>
       </div>
       {/* <div className="relative top-1 "> Stays & Experiences</div> */}
       <div className="flex gap-4">

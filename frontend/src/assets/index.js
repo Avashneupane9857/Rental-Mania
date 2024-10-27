@@ -10,10 +10,11 @@ import cat6 from "./cat6.jpg";
 import prop6 from "./prop6.webp";
 import prop7 from "./prop7.webp";
 import prop8 from "./prop8.webp";
-
+import person from "./p1.jpg";
 import prop9 from "./prop9.webp";
 export {
   logo,
+  person,
   cat1,
   cat2,
   cat3,
