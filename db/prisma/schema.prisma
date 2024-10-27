@@ -12,3 +12,60 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id          String        @id @default(uuid())
+  email       String        @unique
+  password    String
+  Reservation Reservation[]
+}
+
+model Properties {
+  id            String                      @id @default(uuid())
+  name          String
+  description   String
+  features      PropertiesFeaturesListing[]
+  image         String[]
+  address       String
+  price         Int
+  category      String
+  roomCount     Int
+  bathroomCount Int
+  guestCount    Int
+  Reservation   Reservation[]
+}
+
+model Reservation {
+  id String @id @default(uuid())
+
+  startDate  DateTime
+  endDate    DateTime
+  totalPrice Int
+  createdAt  DateTime          @default(now())
+  status     ReservationStatus @default(PENDING)
+
+
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listingId String
+  listing   Properties @relation(fields: [listingId], references: [id], onDelete: Cascade)
+}
+
+enum PropertiesFeaturesListing {
+  WIFI
+  SMOKE_ALARM
+  PETS_ALLOWED
+  KITCHEN
+  WASHER
+  DRYER
+  AIR_CONDITIONING
+  TV
+  PARKING
+}
+
+enum ReservationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
