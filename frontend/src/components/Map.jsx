@@ -17,6 +17,9 @@ function Map() {
           defaultCenter={defaultProps.center}
           defaultZoom={defaultProps.zoom}
         ></GoogleMapReact>
+        <h1 className="font-sans font-medium p-3 text-[20px]">
+          Rome and Italy
+        </h1>
       </div>
     </div>
   );

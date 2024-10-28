@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { cat1, cat2, cat3, cat6, person } from "../assets";
 
 function PdetailsSideBar() {
@@ -15,6 +16,15 @@ function PdetailsSideBar() {
   ];
   const col1 = Enum.slice(0, 5);
   //   const col2 = Enum.slice(5);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const text =
+    "Tra - A Boutique stay, is a premWe l is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the best views on the house over the Firth of Forth to Fife. You will usually be able to relax in the elegant drawing room, and breakfast under the eye of family portraits in the ground floor dining room, enjoying home made bread and jams. The tides of Edinburgh family life will wash around the edges of your stay as you have the chance of an insight into what it is like to live in our wonderful city.hereo is";
+  const words = text.split(" ");
+  const wordLimit = 50;
+  const showBtn = words.length > wordLimit;
+  const displayText = isExpanded
+    ? text
+    : words.slice(0, wordLimit).join(" ") + (showBtn ? "..." : " ");
   return (
     <div className="w-[70%] pt-8">
       <h1 className="text-2xl">Room in Manali, India</h1>
@@ -27,14 +37,15 @@ function PdetailsSideBar() {
       <div className="bg-black opacity-10 w-full h-[1px] relative top-16"></div>
       <div className="relative top-20">
         <h1 className="font-medium mb-5 text-2xl">About our place</h1>
-        <p className="text-justify text-slate-700">
-          Tra - A Boutique stay, is a premium take on a home stay. Your host,
-          Kanupriya, livesnveniently located on Naggar Manali road with superb
-          road condit at the cottage to make your stay utmost comfortable and
-          enriched. We are co at the cottage to make your stay utmost
-          comfortable and enriched. We are co at the cottage to make your stay
-          utmost comfortable and enriched. We are co
-        </p>
+        <p className="text-justify text-slate-700">{displayText}</p>
+        {showBtn && (
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className=" underline rounded-xl "
+          >
+            {isExpanded ? "Show less" : "Show more"}
+          </button>
+        )}
       </div>
       <div>
         <div className="bg-black opacity-10 w-full h-[1px] relative top-32"></div>

@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import { prop3, prop5, prop6, prop7, prop8 } from "../assets";
 
 // eslint-disable-next-line react/prop-types
 const PropertyCard = ({ property }) => {
-  const [currentImage, setCurrentImage] = React.useState(0);
+  const [currentImage, setCurrentImage] = useState(0);
 
   const nextImage = () => {
     setCurrentImage((prev) => (prev + 1) % property.img.length);

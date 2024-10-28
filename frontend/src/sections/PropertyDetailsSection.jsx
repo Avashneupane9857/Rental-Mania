@@ -1,7 +1,10 @@
+import Footer from "../components/Footer";
+import Host from "../components/Host";
 import Map from "../components/Map";
 import PaymentdetailsCard from "../components/PaymentdetailsCard";
 import PdetailsPic from "../components/PdetailsPic";
 import PdetailsSideBar from "../components/PdetailsSideBar";
+import Reviews from "../components/Reviews";
 
 import TopNavbar from "../components/TopNavbar";
 
@@ -21,6 +24,13 @@ function PropertyDetailsSection() {
         <PaymentdetailsCard />
       </div>
       <Map />
+      <div className="h-[1px] relative top-[350px] w-[100%] bg-slate-400 opacity-20"></div>
+      <Reviews />
+      <Host />
+      <div className="relative top-96">
+        {" "}
+        <Footer />
+      </div>
     </div>
   );
 }

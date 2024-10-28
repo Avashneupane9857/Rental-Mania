@@ -1,3 +1,4 @@
+import Footer from "../components/Footer";
 import Category from "../sections/Category";
 import Navbar from "../sections/Navbar";
 import PropertySection from "../sections/PropertySection";
@@ -9,7 +10,8 @@ function LandingPage() {
         <Navbar />
         <Category />
         <PropertySection />
-      </div>
+        <Footer />
+      </div>{" "}
     </div>
   );
 }
