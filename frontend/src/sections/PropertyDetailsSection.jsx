@@ -1,3 +1,4 @@
+import Map from "../components/Map";
 import PaymentdetailsCard from "../components/PaymentdetailsCard";
 import PdetailsPic from "../components/PdetailsPic";
 import PdetailsSideBar from "../components/PdetailsSideBar";
@@ -14,11 +15,12 @@ function PropertyDetailsSection() {
       </div>
 
       <PdetailsPic />
-      <div className="flex w-[100%]">
+      <div className="flex w-[100%] gap-28 mx-auto">
         {" "}
         <PdetailsSideBar />
         <PaymentdetailsCard />
       </div>
+      <Map />
     </div>
   );
 }

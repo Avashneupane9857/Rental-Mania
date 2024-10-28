@@ -4,6 +4,7 @@ function PropertyDetailsPage() {
   return (
     <div>
       <PropertyDetailsSection />
+      
     </div>
   );
 }

@@ -109,6 +109,42 @@ function Properties() {
       location: "Mysore Palace",
       Price: 45000,
     },
+    {
+      id: 19,
+      img: [prop3, prop8, prop7, prop6],
+      location: "Nandi Hills, Bangalore",
+      Price: 32892,
+    },
+    {
+      id: 21,
+      img: [prop6, prop7, prop8, prop3],
+      location: "Coorg Valley",
+      Price: 28500,
+    },
+    {
+      id: 22,
+      img: [prop8, prop3, prop6, prop7],
+      location: "Mysore Palace",
+      Price: 45000,
+    },
+    {
+      id: 12,
+      img: [prop3, prop8, prop7, prop6],
+      location: "Nandi Hills, Bangalore",
+      Price: 32892,
+    },
+    {
+      id: 11,
+      img: [prop6, prop7, prop8, prop3],
+      location: "Coorg Valley",
+      Price: 28500,
+    },
+    {
+      id: 10,
+      img: [prop8, prop3, prop6, prop7],
+      location: "Mysore Palace",
+      Price: 45000,
+    },
   ];
 
   return (

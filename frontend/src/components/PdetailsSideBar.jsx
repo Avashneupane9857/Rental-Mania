@@ -14,9 +14,9 @@ function PdetailsSideBar() {
     { id: 10, img: cat6, title: "Dedicated workspace" },
   ];
   const col1 = Enum.slice(0, 5);
-  const col2 = Enum.slice(5);
+  //   const col2 = Enum.slice(5);
   return (
-    <div className="w-[60%] pt-8">
+    <div className="w-[70%] pt-8">
       <h1 className="text-2xl">Room in Manali, India</h1>
       <div className="bg-black opacity-10 w-full h-[1px] relative top-4"></div>
       <div className="flex gap-4 relative top-10">
