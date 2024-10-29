@@ -2,7 +2,12 @@ import { logo } from "../assets";
 import { CiGlobe } from "react-icons/ci";
 import { IoPersonCircleOutline } from "react-icons/io5";
 import { CiMenuBurger } from "react-icons/ci";
+import { useNavigate } from "react-router-dom";
 function TopNavbar() {
+  const navigate = useNavigate();
+  const host = () => {
+    navigate("/hosting");
+  };
   return (
     <div className="relative top-6 flex justify-between  ">
       <div>
@@ -13,7 +18,10 @@ function TopNavbar() {
       </div>
       {/* <div className="relative top-1 "> Stays & Experiences</div> */}
       <div className="flex gap-4">
-        <button className="text-slate-800 hover:bg-slate-100 hover:rounded-2xl w-36   ">
+        <button
+          onClick={host}
+          className="text-slate-800 hover:bg-slate-100 hover:rounded-2xl w-36   "
+        >
           Switch to hosting
         </button>
         <button>
