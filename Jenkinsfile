@@ -2,9 +2,9 @@ pipeline {
     agent any
     environment {
         DOCKER_HUB_CREDENTIALS = 'dockerhub'
-        DOCKER_IMAGE = 'avash9857/positivus'
-        EC2_SSH_CREDENTIALS = 'ec2-ssh-id'
-        EC2_HOST = '54.197.20.203'
+        // DOCKER_IMAGE = 'avash9857/positivus'
+        // EC2_SSH_CREDENTIALS = 'ec2-ssh-id'
+        // EC2_HOST = '54.197.20.203'
     }
     stages {
         stage('Clone Repository') {

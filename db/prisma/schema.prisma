@@ -14,58 +14,84 @@ datasource db {
 }
 
 model User {
-  id          String        @id @default(uuid())
-  email       String        @unique
-  password    String
-  Reservation Reservation[]
+  id             String   @id @default(cuid())
+  name           String?
+  email          String   @unique
+  image          String?
+  hashedPassword String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // user sanga huncha properties ko multiple listings
+  listings         Listing[]
+  // User ley multiple  reservations garna milcha 
+  reservations     Reservation[]
+  // User ley multiple reviews dina milcha 
+  reviews          Review[]
+  // User ley fav garna milcha properties lai 
+  favoriteListings Listing[]     @relation("FavoriteListings")
 }
 
-model Properties {
-  id            String                      @id @default(uuid())
-  name          String
+model Listing {
+  id            String   @id @default(cuid())
+  title         String
   description   String
-  features      PropertiesFeaturesListing[]
-  image         String[]
-  address       String
-  price         Int
+  imageSrc      String[]
+  createdAt     DateTime @default(now())
   category      String
   roomCount     Int
   bathroomCount Int
   guestCount    Int
-  Reservation   Reservation[]
+  price         Float
+
+  // Location coordinates exact location produce garna lai   
+  latitude  Float?
+  longitude Float?
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade) //yo id ko user ley aafnio id delete gareypachi sabai data will be deleted 
+
+  // Reservations for this listing yo property ko lai 
+  reservations Reservation[]
+  // Reviews for this property
+  reviews      Review[]
+  // Users who favorited yo property
+  favoritedBy  User[]        @relation("FavoriteListings")
+
+  @@index([userId])
 }
 
 model Reservation {
-  id String @id @default(uuid())
-
+  id         String   @id @default(cuid())
   startDate  DateTime
   endDate    DateTime
-  totalPrice Int
-  createdAt  DateTime          @default(now())
-  status     ReservationStatus @default(PENDING)
+  totalPrice Float
+  createdAt  DateTime @default(now())
 
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  userId    String
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   listingId String
-  listing   Properties @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  listing   Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([listingId])
 }
 
-enum PropertiesFeaturesListing {
-  WIFI
-  SMOKE_ALARM
-  PETS_ALLOWED
-  KITCHEN
-  WASHER
-  DRYER
-  AIR_CONDITIONING
-  TV
-  PARKING
-}
+model Review {
+  id        String   @id @default(cuid())
+  rating    Int
+  comment   String
+  createdAt DateTime @default(now())
 
-enum ReservationStatus {
-  PENDING
-  APPROVED
-  REJECTED
-  CANCELLED
+  // Relationship with User (jasley review dincha )
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Relationship with Listing
+  listingId String
+  listing   Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([listingId])
 }
