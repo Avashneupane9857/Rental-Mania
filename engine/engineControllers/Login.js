@@ -1,9 +1,15 @@
-export const Login = (email, password) => {
+import { prisma } from "../../db/index.js";
+
+export const Login = async (email, password) => {
   if (email && password) {
-    return {
-      message: "I received email and password",
-      email,
-      password,
-    };
+    const databaseAdded = await prisma.user.create({
+      data: {
+        email,
+        hashedPassword: password,
+      },
+    });
+    return databaseAdded;
   }
+
+  console.log(email, password);
 };
