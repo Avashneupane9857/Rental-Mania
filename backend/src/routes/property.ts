@@ -104,12 +104,14 @@ propertyRoutes.delete(
 );
 
 propertyRoutes.get("/", async (req: Request, res: Response) => {
-  const { title, category, price } = req.query;
+  const { title, category, price ,location} = req.query;
   const query: any = {};
   if (title) {
     query.title = title as string;
   }
-
+if(location){
+  query.location=location as string
+}
   if (category) {
     query.category = category as string;
   }
