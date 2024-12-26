@@ -1,1 +1,1 @@
-{"root":["./src/index.ts","./src/db/prisma/index.ts","./src/middleware.ts/authmiddleware.ts","./src/routes/auth.ts","./src/routes/property.ts","./src/types/types.ts"],"version":"5.6.3"}
+{"root":["./src/custom.d.ts","./src/index.ts","./src/db/prisma/index.ts","./src/middleware.ts/authmiddleware.ts","./src/routes/auth.ts","./src/routes/property.ts","./src/types/types.ts"],"version":"5.6.3"}

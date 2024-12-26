@@ -30,7 +30,16 @@ const express_1 = __importDefault(require("express"));
 const auth_1 = require("./routes/auth");
 const property_1 = require("./routes/property");
 const dotenv = __importStar(require("dotenv"));
+const cors_1 = __importDefault(require("cors"));
+const corsOptions = {
+    origin: ["http://localhost:5173", "https://your-frontend-domain.com"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+};
+// Enable CORS
 const app = (0, express_1.default)();
+app.use((0, cors_1.default)(corsOptions));
 dotenv.config();
 const port = process.env.PORT;
 app.use(express_1.default.json());

@@ -4,8 +4,8 @@ import jwt from "jsonwebtoken";
 declare global {
     namespace Express {
         interface Request {
-            userId?: string;
-            email?: string;
+            userId: string;
+            email: string;
         }
     }
 }
@@ -34,7 +34,7 @@ export const middleware = (req: Request, res: Response, next: NextFunction) => {
         const decoded = jwt.verify(token, secret) as { userId: string; email: string };
         req.userId = decoded.userId;
         req.email = decoded.email;
-        console.log(decoded);
+       console.log(req.userId) 
 
  
         next();
