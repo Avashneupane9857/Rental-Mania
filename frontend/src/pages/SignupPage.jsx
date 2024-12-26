@@ -1,6 +1,43 @@
+import { useState } from "react";
 import TopNavbar from "../components/TopNavbar";
-
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { backendUrl } from "../../config";
 function SignupPage() {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [profession, setProfession] = useState("");
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const hitEndPoint = async () => {
+      try {
+        console.log(backendUrl);
+        const response = await axios.post(`${backendUrl}/auth/signup`, {
+          email,
+          password,
+          firstName,
+          lastName,
+          phoneNumber,
+          profession,
+        });
+        if (response.status === 200) {
+          navigate("/");
+        } else {
+          alert("Fill details correctly");
+        }
+      } catch (error) {
+        console.error("Error during signup:", error);
+        alert("Signup failed. Please try again.");
+      }
+    };
+    hitEndPoint();
+  };
+
   return (
     <div className="w-[80%] mx-auto">
       <div className="bg-black opacity-20 h-[1px] top-20 relative"></div>
@@ -12,6 +49,9 @@ function SignupPage() {
               type="email"
               name="floating_email"
               id="floating_email"
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
               required
@@ -28,6 +68,9 @@ function SignupPage() {
               type="password"
               name="floating_password"
               id="floating_password"
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
               required
@@ -61,6 +104,9 @@ function SignupPage() {
                 type="text"
                 name="floating_first_name"
                 id="floating_first_name"
+                onChange={(e) => {
+                  setFirstName(e.target.value);
+                }}
                 className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder=" "
                 required
@@ -77,6 +123,9 @@ function SignupPage() {
                 type="text"
                 name="floating_last_name"
                 id="floating_last_name"
+                onChange={(e) => {
+                  setLastName(e.target.value);
+                }}
                 className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder=" "
                 required
@@ -93,9 +142,11 @@ function SignupPage() {
             <div className="relative z-0 w-full mb-5 group">
               <input
                 type="tel"
-                pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
                 name="floating_phone"
                 id="floating_phone"
+                onChange={(e) => {
+                  setPhoneNumber(e.target.value);
+                }}
                 className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder=" "
                 required
@@ -114,6 +165,9 @@ function SignupPage() {
                 id="floating_company"
                 className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-black dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                 placeholder=" "
+                onChange={(e) => {
+                  setProfession(e.target.value);
+                }}
                 required
               />
               <label
@@ -126,7 +180,8 @@ function SignupPage() {
           </div>
           <button
             type="submit"
-            className="text-black vbg-[#ff5A5F] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center "
+            onClick={handleSubmit}
+            className="text-black bg-[#ff5A5F] focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center "
           >
             Submit
           </button>
