@@ -51,7 +51,7 @@ model Listing {
   latitude  Float?
   longitude Float?
 
-  userId String 
+  userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade) //yo id ko user ley aafnio id delete gareypachi sabai data will be deleted 
 
   // Reservations for this listing yo property ko lai 
@@ -98,3 +98,5 @@ model Review {
   @@index([userId])
   @@index([listingId])
 }
+
+//enum for category

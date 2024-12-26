@@ -3,6 +3,7 @@ import { authroutes } from "./routes/auth"
 import { propertyRoutes } from "./routes/property"
 import * as dotenv from 'dotenv';
 import cors from "cors";
+
 const corsOptions = {
     origin: ["http://localhost:5173", "https://your-frontend-domain.com"],
     methods: ["GET", "POST", "PUT", "DELETE"], 
@@ -24,6 +25,7 @@ app.get("/",(req,res)=>{
 
 app.use("/auth",authroutes)
 app.use("/property",propertyRoutes)
+
 app.listen(port,()=>{
     console.log(`server running in ${port}`)
 })
