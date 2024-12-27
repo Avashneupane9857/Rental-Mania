@@ -3,7 +3,7 @@ import { authroutes } from "./routes/auth"
 import { propertyRoutes } from "./routes/property"
 import * as dotenv from 'dotenv';
 import cors from "cors";
-
+dotenv.config();
 const corsOptions = {
     origin: ["http://localhost:5173", "https://your-frontend-domain.com"],
     methods: ["GET", "POST", "PUT", "DELETE"], 
@@ -16,7 +16,7 @@ const corsOptions = {
 const app =express()
 app.use(cors(corsOptions));
 app.use(express.static('public'));
-dotenv.config();
+
 const port=process.env.PORT
 
 app.use(express.json());

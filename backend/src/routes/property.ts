@@ -15,12 +15,24 @@ propertyRoutes.post(
   upload.array("images"),
   middleware,
   async (req: Request, res: Response) => {
-    const parseData = listingSchema.safeParse(req.body);
+
+
+    const parseData = listingSchema.safeParse({
+      title:req.body.title,
+      description:req.body.description,
+      category:req.body.category,
+      roomCount:+req.body.roomCount,
+      bathroomCount:+req.body.bathroomCount,
+      guestCount:+req.body.guestCount,
+      latitude:+req.body.latitude,
+      longtitude: +req.body.longitude,
+      price: +req.body.price
+    });
     const files = req.files as Express.Multer.File[];
     const userId = req.userId;
 
-    console.log(console.log(req.body));
-
+console.log(process.env.AWS_ACCESS_KEY_ID)
+console.log(process.env.AWS_REGION)
     if (!userId) {
       res.json({ msg: "No userId passed from middleware" });
       return;
@@ -37,7 +49,7 @@ propertyRoutes.post(
         res.status(400).json({ msg: "No image file" });
         return;
       }
-
+console.log(process.env.S3_BUCKET_NAME)
       const uploadedImageUrls = await Promise.all(
         files.map(async (file) => {
           const params = {
@@ -45,7 +57,7 @@ propertyRoutes.post(
             Key: `listings/${uuidv4()}_${file.originalname}`,
             Body: file.buffer,
             ContentType: file.mimetype,
-            ACL: "public-read",
+            // ACL: "public-read",
           };
 
           const uploadResult = await s3.upload(params).promise();

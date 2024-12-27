@@ -20,15 +20,26 @@ const prisma_1 = require("../db/prisma");
 const uuid_1 = require("uuid");
 const multer_1 = __importDefault(require("multer"));
 const awsConfig_1 = __importDefault(require("../awsConfig"));
-// upload images that will be saved to S3 bucket and in frontend fetch from there 
+// upload images that will be saved to S3 bucket and in frontend fetch from there
 exports.propertyRoutes = (0, express_1.Router)();
 const upload = (0, multer_1.default)({ storage: multer_1.default.memoryStorage() });
 exports.propertyRoutes.post("/list", upload.array("images"), authMiddleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
-    const parseData = types_1.listingSchema.safeParse(req.body);
+    const parseData = types_1.listingSchema.safeParse({
+        title: req.body.title,
+        description: req.body.description,
+        category: req.body.category,
+        roomCount: +req.body.roomCount,
+        bathroomCount: +req.body.bathroomCount,
+        guestCount: +req.body.guestCount,
+        latitude: +req.body.latitude,
+        longtitude: +req.body.longitude,
+        price: +req.body.price
+    });
     const files = req.files;
     const userId = req.userId;
-    console.log(console.log(req.body));
+    console.log(process.env.AWS_ACCESS_KEY_ID);
+    console.log(process.env.AWS_REGION);
     if (!userId) {
         res.json({ msg: "No userId passed from middleware" });
         return;
@@ -45,13 +56,14 @@ exports.propertyRoutes.post("/list", upload.array("images"), authMiddleware_1.mi
             res.status(400).json({ msg: "No image file" });
             return;
         }
+        console.log(process.env.S3_BUCKET_NAME);
         const uploadedImageUrls = yield Promise.all(files.map((file) => __awaiter(void 0, void 0, void 0, function* () {
             const params = {
                 Bucket: process.env.S3_BUCKET_NAME,
                 Key: `listings/${(0, uuid_1.v4)()}_${file.originalname}`,
                 Body: file.buffer,
                 ContentType: file.mimetype,
-                ACL: 'public-read',
+                // ACL: "public-read",
             };
             const uploadResult = yield awsConfig_1.default.upload(params).promise();
             return uploadResult.Location;
@@ -83,30 +95,32 @@ exports.propertyRoutes.get("/filter", authMiddleware_1.middleware, (req, res) =>
         const { title, category, price, location } = req.query;
         const query = {};
         // Add conditions only if the parameters exist and are non-empty
-        if (title && typeof title === 'string' && title.trim() !== '') {
+        if (title && typeof title === "string" && title.trim() !== "") {
             query.title = title.trim();
         }
-        if (location && typeof location === 'string' && location.trim() !== '') {
+        if (location && typeof location === "string" && location.trim() !== "") {
             query.location = location.trim();
         }
-        if (category && typeof category === 'string' && category.trim() !== '') {
+        if (category && typeof category === "string" && category.trim() !== "") {
             query.category = category.trim();
         }
-        if (price && typeof price === 'string' && price.trim() !== '') {
+        if (price && typeof price === "string" && price.trim() !== "") {
             query.price = parseInt(price.trim()); // Convert to number since price in your schema appears to be numeric
         }
-        console.log('Filter query:', query);
+        console.log("Filter query:", query);
         const property = yield prisma_1.prisma.listing.findMany({
             where: query,
         });
         if (property.length === 0) {
-            res.status(200).json({ msg: `No properties found matching the criteria` });
+            res
+                .status(200)
+                .json({ msg: `No properties found matching the criteria` });
             return;
         }
         res.status(200).json({ property });
     }
     catch (e) {
-        console.error('Error in filter route:', e);
+        console.error("Error in filter route:", e);
         res.status(403).json({ msg: "Error in filter route of property" });
         return;
     }
@@ -139,7 +153,7 @@ exports.propertyRoutes.get("/", authMiddleware_1.middleware, (req, res) => __awa
         return;
     }
     res.status(200).json({
-        property
+        property,
     });
 }));
 exports.propertyRoutes.delete("/:propertyId", authMiddleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
