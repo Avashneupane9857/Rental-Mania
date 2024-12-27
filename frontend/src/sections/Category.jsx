@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { cat1, cat2, cat3, cat4, cat5, cat6 } from "../assets";
-import { ChevronRight, ChevronLeft } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 function Category() {
   const categories = [
     { icon: cat1, category: "Farns" },
@@ -9,12 +8,6 @@ function Category() {
     { icon: cat4, category: "Cabin" },
     { icon: cat5, category: "Farns" },
     { icon: cat6, category: "Camp" },
-    { icon: cat1, category: "Farns" },
-    { icon: cat2, category: "Villa" },
-    { icon: cat1, category: "Farns" },
-    { icon: cat2, category: "Villa" },
-    { icon: cat1, category: "Farns" },
-    { icon: cat2, category: "Villa" },
   ];
   //   const [other, setOther] = useState(false);
 

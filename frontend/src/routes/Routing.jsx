@@ -13,7 +13,10 @@ function Routing() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
-        <Route path="/property/details" element={<PropertyDetailsPage />} />
+        <Route
+          path="/propertyDetails/:propertyId"
+          element={<PropertyDetailsPage />}
+        />
         <Route path="/hosting" element={<HostLanding />} />
         <Route path="/hosting/listing" element={<HostListing />} />
       </Routes>

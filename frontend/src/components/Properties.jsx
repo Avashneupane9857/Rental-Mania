@@ -2,102 +2,105 @@
 import { useState, useEffect } from "react";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { backendUrl } from "../../config";
-
 const PropertyCard = ({ property }) => {
   const [currentImage, setCurrentImage] = useState(0);
+  const [loadedImages, setLoadedImages] = useState({});
+  const navigate = useNavigate();
 
-  console.log("Property data:", property);
+  useEffect(() => {
+    const preloadImages = () => {
+      if (!property.imageSrc?.length) return;
 
-  const nextImage = () => {
-    setCurrentImage((prev) => (prev + 1) % property.imageSrc.length);
+      property.imageSrc.forEach((src, index) => {
+        const img = new Image();
+        img.src = src;
+        img.onload = () =>
+          setLoadedImages((prev) => ({ ...prev, [index]: true }));
+      });
+    };
+
+    preloadImages();
+  }, [property.imageSrc]);
+
+  const handleCardClick = () => {
+    navigate(`/propertyDetails/${property.id}`);
   };
 
-  const prevImage = () => {
-    if (currentImage === 0) {
-      setCurrentImage(property.imageSrc.length - 1);
-    } else {
-      setCurrentImage(currentImage - 1);
-    }
-  };
-
-  const images = Array.isArray(property.imageSrc) ? property.imageSrc : [];
-  const currentImageUrl = images[currentImage] || "";
-
+  const currentSrc = property.imageSrc?.[currentImage];
+  const isImageLoaded = loadedImages[currentImage];
+  const showControls = isImageLoaded && property.imageSrc?.length > 1;
+  console.log(property.imageSrc);
   return (
-    <div className="relative top-20 w-[310px] cursor-pointer group">
+    <div
+      onClick={handleCardClick}
+      className="relative top-20 w-[310px] cursor-pointer group"
+    >
       <div className="relative">
-        {images.length > 0 ? (
-          <>
-            <img
-              className="w-[310px] h-72 rounded-2xl object-cover"
-              src={currentImageUrl}
-              alt={property.title}
-              onError={(e) => {
-                console.error("Image failed to load:", currentImageUrl);
-                e.target.src = "/placeholder-image.jpg"; // Add a placeholder image
-              }}
-            />
-
-            {currentImage > 0 && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  prevImage();
-                }}
-                className="absolute left-2 top-1/2 -translate-y-1/2 bg-white border-2 rounded-full w-8 h-8 
-                         flex justify-center items-center opacity-0 group-hover:opacity-100 
-                         transition-all hover:scale-110 hover:shadow-lg"
-              >
-                <ChevronLeft className="w-4 h-4 text-gray-600 group-hover:text-gray-900" />
-              </button>
-            )}
-
-            {currentImage < images.length - 1 && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  nextImage();
-                }}
-                className="absolute right-2 top-1/2 -translate-y-1/2 bg-white border-2 rounded-full w-8 h-8 
-                         flex justify-center items-center opacity-0 group-hover:opacity-100 
-                         transition-all hover:scale-110 hover:shadow-lg"
-              >
-                <ChevronRight className="w-4 h-4 text-gray-600 group-hover:text-gray-900" />
-              </button>
-            )}
-
-            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
-              {images.map((_, index) => (
-                <div
-                  key={index}
-                  className={`w-1.5 h-1.5 rounded-full transition-all duration-200 
-                            ${
-                              currentImage === index
-                                ? "bg-white w-2.5"
-                                : "bg-white/60"
-                            }`}
-                />
-              ))}
-            </div>
-          </>
+        {!isImageLoaded || !currentSrc ? (
+          <div className="w-[310px] h-72 rounded-2xl bg-gray-200 animate-pulse" />
         ) : (
-          <div className="w-[310px] h-72 rounded-2xl bg-gray-200 flex items-center justify-center">
-            <span className="text-gray-400">No image available</span>
+          <img
+            className="w-[310px] h-72 rounded-2xl object-cover"
+            src={currentSrc}
+            alt={property.title}
+          />
+        )}
+
+        {showControls && currentImage > 0 && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setCurrentImage((prev) =>
+                prev === 0 ? property.imageSrc.length - 1 : prev - 1
+              );
+            }}
+            className="absolute left-2 top-1/2 -translate-y-1/2 bg-white border-2 rounded-full w-8 h-8 
+                     flex justify-center items-center opacity-0 group-hover:opacity-100 
+                     transition-all hover:scale-110 hover:shadow-lg"
+          >
+            <ChevronLeft className="w-4 h-4 text-gray-600 group-hover:text-gray-900" />
+          </button>
+        )}
+
+        {showControls && currentImage < property.imageSrc.length - 1 && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setCurrentImage((prev) => (prev + 1) % property.imageSrc.length);
+            }}
+            className="absolute right-2 top-1/2 -translate-y-1/2 bg-white border-2 rounded-full w-8 h-8 
+                     flex justify-center items-center opacity-0 group-hover:opacity-100 
+                     transition-all hover:scale-110 hover:shadow-lg"
+          >
+            <ChevronRight className="w-4 h-4 text-gray-600 group-hover:text-gray-900" />
+          </button>
+        )}
+
+        {showControls && (
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+            {property.imageSrc.map((_, index) => (
+              <div
+                key={index}
+                className={`w-1.5 h-1.5 rounded-full transition-all duration-200 
+                          ${
+                            currentImage === index
+                              ? "bg-white w-2.5"
+                              : "bg-white/60"
+                          }`}
+              />
+            ))}
           </div>
         )}
       </div>
 
       <div className="mt-3">
         <h1 className="font-medium">{property.title}</h1>
-        <p className="text-slate-500 font-thin mt-1">
-          {property.description?.substring(0, 30)}...
-        </p>
+        <h1 className="text-slate-500 font-thin mt-1">{property.category}</h1>
         <div className="flex font-semibold mt-1 gap-1 items-center">
           <span className="font-normal">₹</span>
-          <span className="font-normal">
-            {property.price?.toLocaleString()}
-          </span>
+          <span className="font-normal">{property.price.toLocaleString()}</span>
           <span className="font-extralight">night</span>
         </div>
       </div>
@@ -107,32 +110,21 @@ const PropertyCard = ({ property }) => {
 
 function Properties() {
   const [properties, setProperties] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const token = localStorage.getItem("authToken");
-
-        if (!token) {
-          throw new Error("No authentication token found");
-        }
-
-        const response = await axios.get(`${backendUrl}/property`, {
+        const { data } = await axios.get(`${backendUrl}/property`, {
           headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
         });
-
-        if (response.data && response.data.property) {
-          setProperties(response.data.property);
-        }
-        setLoading(false);
+        setProperties(data.property);
       } catch (err) {
-        console.error("Error fetching properties:", err);
         setError(err.response?.data?.msg || "Failed to fetch properties");
+      } finally {
         setLoading(false);
       }
     };
@@ -140,24 +132,8 @@ function Properties() {
     fetchProperties();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-red-500 text-center">
-          <p className="text-xl font-semibold">Error</p>
-          <p>{error}</p>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div className="text-red-500">Error: {error}</div>;
 
   return (
     <div className="container mx-auto px-4">
