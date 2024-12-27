@@ -11,7 +11,7 @@ const corsOptions = {
     credentials: true, 
   };
   
-  // Enable CORS
+
   
 const app =express()
 app.use(cors(corsOptions));

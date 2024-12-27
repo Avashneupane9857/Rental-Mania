@@ -114,8 +114,8 @@ exports.propertyRoutes.get("/", authMiddleware_1.middleware, (req, res) => __awa
     });
 }));
 exports.propertyRoutes.delete("/:propertyId", authMiddleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    if (!id) {
+    const { propertyId } = req.params;
+    if (!propertyId) {
         res.status(400).json({
             msg: "Please provide Id",
         });
@@ -123,7 +123,7 @@ exports.propertyRoutes.delete("/:propertyId", authMiddleware_1.middleware, (req,
     }
     const property = yield prisma_1.prisma.listing.findUnique({
         where: {
-            id: id,
+            id: propertyId,
         },
     });
     if (!property) {
@@ -132,10 +132,10 @@ exports.propertyRoutes.delete("/:propertyId", authMiddleware_1.middleware, (req,
     }
     yield prisma_1.prisma.listing.delete({
         where: {
-            id: id,
+            id: propertyId,
         },
     });
     res.status(200).json({
-        msg: `Property with ID ${id} deleted successfully. ${property}`,
+        msg: `Property with ID ${propertyId} deleted successfully. ${property}`,
     });
 }));

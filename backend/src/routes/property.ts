@@ -133,8 +133,8 @@ propertyRoutes.delete(
   "/:propertyId",
   middleware,
   async (req: Request, res: Response) => {
-    const { id } = req.params;
-    if (!id) {
+    const { propertyId } = req.params;
+    if (!propertyId) {
       res.status(400).json({
         msg: "Please provide Id",
       });
@@ -143,7 +143,7 @@ propertyRoutes.delete(
 
     const property = await prisma.listing.findUnique({
       where: {
-        id: id,
+        id: propertyId,
       },
     });
     if (!property) {
@@ -152,12 +152,12 @@ propertyRoutes.delete(
     }
     await prisma.listing.delete({
       where: {
-        id: id,
+        id: propertyId,
       },
     });
 
     res.status(200).json({
-      msg: `Property with ID ${id} deleted successfully. ${property}`,
+      msg: `Property with ID ${propertyId} deleted successfully. ${property}`,
     });
   }
 );

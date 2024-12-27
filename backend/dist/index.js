@@ -37,7 +37,6 @@ const corsOptions = {
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
 };
-// Enable CORS
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)(corsOptions));
 dotenv.config();

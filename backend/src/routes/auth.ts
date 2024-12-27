@@ -75,6 +75,6 @@ if(!check){
 }
 
 const token=jwt.sign({userId:user.id,email:user.email},secret)
-localStorage.setItem(token,token)
+
 res.status(200).json({token})
 })
