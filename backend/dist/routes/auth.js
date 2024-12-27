@@ -17,13 +17,14 @@ const express_1 = require("express");
 const types_1 = require("../types/types");
 const prisma_1 = require("../db/prisma");
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const dotenv_1 = __importDefault(require("dotenv"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 exports.authroutes = (0, express_1.Router)();
+dotenv_1.default.config();
 const secret = process.env.JWT_SECRET;
 if (!secret) {
     throw new Error("JWT_SECRET is not defined in the environment variables");
 }
-console.log(secret);
 exports.authroutes.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const parsedData = types_1.SignupSchema.safeParse(req.body);
     if (!parsedData.success) {

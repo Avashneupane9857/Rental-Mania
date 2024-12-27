@@ -38,8 +38,6 @@ exports.propertyRoutes.post("/list", upload.array("images"), authMiddleware_1.mi
     });
     const files = req.files;
     const userId = req.userId;
-    console.log(process.env.AWS_ACCESS_KEY_ID);
-    console.log(process.env.AWS_REGION);
     if (!userId) {
         res.json({ msg: "No userId passed from middleware" });
         return;

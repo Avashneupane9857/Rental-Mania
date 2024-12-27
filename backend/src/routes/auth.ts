@@ -2,15 +2,16 @@ import { Request, Response, Router } from 'express';
 import { LoginSchema, SignupSchema } from '../types/types';
 import { prisma } from '../db/prisma';
 import bcrypt from "bcrypt"
+import dotenv from "dotenv"
 import jwt from "jsonwebtoken"
 export const authroutes = Router();
-
+dotenv.config()
 const secret=process.env.JWT_SECRET
 
 if (!secret) {
     throw new Error("JWT_SECRET is not defined in the environment variables");
 }
-console.log(secret)
+
 authroutes.post("/signup",async(req:Request,res:Response)=>{
    const parsedData=SignupSchema.safeParse(req.body)
    if(!parsedData.success){

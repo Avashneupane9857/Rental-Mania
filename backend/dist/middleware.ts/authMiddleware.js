@@ -25,7 +25,6 @@ const middleware = (req, res, next) => {
         const decoded = jsonwebtoken_1.default.verify(token, secret);
         req.userId = decoded.userId;
         req.email = decoded.email;
-        console.log(req.userId);
         next();
     }
     catch (error) {
