@@ -94,7 +94,6 @@ exports.propertyRoutes.get("/filter", authMiddleware_1.middleware, (req, res) =>
     try {
         const { title, category, price, location } = req.query;
         const query = {};
-        // Add conditions only if the parameters exist and are non-empty
         if (title && typeof title === "string" && title.trim() !== "") {
             query.title = title.trim();
         }

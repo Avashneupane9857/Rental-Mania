@@ -31,8 +31,7 @@ propertyRoutes.post(
     const files = req.files as Express.Multer.File[];
     const userId = req.userId;
 
-console.log(process.env.AWS_ACCESS_KEY_ID)
-console.log(process.env.AWS_REGION)
+
     if (!userId) {
       res.json({ msg: "No userId passed from middleware" });
       return;
@@ -95,7 +94,6 @@ propertyRoutes.get(
       const { title, category, price, location } = req.query;
       const query: any = {};
 
-      // Add conditions only if the parameters exist and are non-empty
       if (title && typeof title === "string" && title.trim() !== "") {
         query.title = title.trim();
       }

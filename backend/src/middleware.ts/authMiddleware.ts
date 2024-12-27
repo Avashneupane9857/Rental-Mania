@@ -34,7 +34,7 @@ export const middleware = (req: Request, res: Response, next: NextFunction) => {
         const decoded = jwt.verify(token, secret) as { userId: string; email: string };
         req.userId = decoded.userId;
         req.email = decoded.email;
-       console.log(req.userId) 
+ 
 
  
         next();
