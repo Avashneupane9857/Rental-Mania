@@ -31,11 +31,11 @@ const PropertyCard = ({ property }) => {
   const currentSrc = property.imageSrc?.[currentImage];
   const isImageLoaded = loadedImages[currentImage];
   const showControls = isImageLoaded && property.imageSrc?.length > 1;
-  console.log(property.imageSrc);
+
   return (
     <div
       onClick={handleCardClick}
-      className="relative top-20 w-[310px] cursor-pointer group"
+      className="relative top-28 w-[310px] cursor-pointer group"
     >
       <div className="relative">
         {!isImageLoaded || !currentSrc ? (

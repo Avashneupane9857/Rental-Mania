@@ -54,14 +54,13 @@ exports.propertyRoutes.post("/list", upload.array("images"), authMiddleware_1.mi
             res.status(400).json({ msg: "No image file" });
             return;
         }
-        console.log(process.env.S3_BUCKET_NAME);
         const uploadedImageUrls = yield Promise.all(files.map((file) => __awaiter(void 0, void 0, void 0, function* () {
             const params = {
                 Bucket: process.env.S3_BUCKET_NAME,
                 Key: `listings/${(0, uuid_1.v4)()}_${file.originalname}`,
                 Body: file.buffer,
                 ContentType: file.mimetype,
-                // ACL: "public-read",
+                ACL: "public-read",
             };
             const uploadResult = yield awsConfig_1.default.upload(params).promise();
             return uploadResult.Location;

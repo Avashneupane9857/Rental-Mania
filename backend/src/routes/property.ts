@@ -48,7 +48,7 @@ propertyRoutes.post(
         res.status(400).json({ msg: "No image file" });
         return;
       }
-console.log(process.env.S3_BUCKET_NAME)
+
       const uploadedImageUrls = await Promise.all(
         files.map(async (file) => {
           const params = {
@@ -56,7 +56,7 @@ console.log(process.env.S3_BUCKET_NAME)
             Key: `listings/${uuidv4()}_${file.originalname}`,
             Body: file.buffer,
             ContentType: file.mimetype,
-            // ACL: "public-read",
+            ACL: "public-read",
           };
 
           const uploadResult = await s3.upload(params).promise();

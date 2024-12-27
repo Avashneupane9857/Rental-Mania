@@ -40,7 +40,7 @@ authroutes.post("/signup",async(req:Request,res:Response)=>{
             lastName:parsedData.data.lastName,
             hashedPassword:hashedPassword,
             phoneNum:parsedData.data.phoneNum,
-        profession:parsedData.data.profession
+             profession:parsedData.data.profession
         }
     })
 
