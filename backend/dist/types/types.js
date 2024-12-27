@@ -17,10 +17,6 @@ exports.LoginSchema = zod_1.z.object({
 exports.listingSchema = zod_1.z.object({
     title: zod_1.z.string().min(1, { message: "Title is required" }),
     description: zod_1.z.string().min(1, { message: "Description is required" }),
-    imageSrc: zod_1.z.array(zod_1.z.union([
-        zod_1.z.string().url(), // For URLs
-        zod_1.z.instanceof(File) // For local file uploads
-    ])).min(1, { message: "At least one image is required" }),
     category: zod_1.z.enum(['VILLA', 'HOME', 'CABIN', 'FARMS', 'CAMP'], {
         required_error: "Category is required",
         invalid_type_error: "Category must be one of: VILLA, HOME, CABIN, FARMS, CAMP"

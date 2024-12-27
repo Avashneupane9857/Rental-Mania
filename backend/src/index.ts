@@ -15,6 +15,7 @@ const corsOptions = {
   
 const app =express()
 app.use(cors(corsOptions));
+app.use(express.static('public'));
 dotenv.config();
 const port=process.env.PORT
 

@@ -39,6 +39,7 @@ const corsOptions = {
 };
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)(corsOptions));
+app.use(express_1.default.static('public'));
 dotenv.config();
 const port = process.env.PORT;
 app.use(express_1.default.json());

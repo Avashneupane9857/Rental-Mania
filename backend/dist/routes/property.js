@@ -8,31 +8,59 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.propertyRoutes = void 0;
 const express_1 = require("express");
 const authMiddleware_1 = require("../middleware.ts/authMiddleware");
 const types_1 = require("../types/types");
 const prisma_1 = require("../db/prisma");
-// upload images that will be saved to S3 bucket and in frontend fetch from there directly
+const uuid_1 = require("uuid");
+const multer_1 = __importDefault(require("multer"));
+const awsConfig_1 = __importDefault(require("../awsConfig"));
+// upload images that will be saved to S3 bucket and in frontend fetch from there 
 exports.propertyRoutes = (0, express_1.Router)();
-exports.propertyRoutes.post("/list", authMiddleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const upload = (0, multer_1.default)({ storage: multer_1.default.memoryStorage() });
+exports.propertyRoutes.post("/list", upload.array("images"), authMiddleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const parseData = types_1.listingSchema.safeParse(req.body);
+    const files = req.files;
     const userId = req.userId;
-    console.log(userId);
+    console.log(console.log(req.body));
     if (!userId) {
         res.json({ msg: "No userId passed from middleware" });
+        return;
     }
     try {
+        if ((_a = parseData.error) === null || _a === void 0 ? void 0 : _a.errors) {
+            console.log(parseData.error);
+        }
         if (!parseData.success) {
             res.status(400).json({ msg: "Validation error" });
             return;
         }
+        if (!files) {
+            res.status(400).json({ msg: "No image file" });
+            return;
+        }
+        const uploadedImageUrls = yield Promise.all(files.map((file) => __awaiter(void 0, void 0, void 0, function* () {
+            const params = {
+                Bucket: process.env.S3_BUCKET_NAME,
+                Key: `listings/${(0, uuid_1.v4)()}_${file.originalname}`,
+                Body: file.buffer,
+                ContentType: file.mimetype,
+                ACL: 'public-read',
+            };
+            const uploadResult = yield awsConfig_1.default.upload(params).promise();
+            return uploadResult.Location;
+        })));
         const property = yield prisma_1.prisma.listing.create({
             data: {
                 title: parseData.data.title,
                 description: parseData.data.description,
-                imageSrc: parseData.data.imageSrc,
+                imageSrc: uploadedImageUrls,
                 category: parseData.data.category,
                 roomCount: parseData.data.roomCount,
                 bathroomCount: parseData.data.bathroomCount,
