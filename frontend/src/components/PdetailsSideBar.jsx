@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { cat1, cat2, cat3, cat6, person } from "../assets";
 
-function PdetailsSideBar() {
+function PdetailsSideBar({ data }) {
   const Enum = [
     { id: 1, img: cat1, title: "Free parking on premises" },
     { id: 2, img: cat2, title: "Dedicated workspace" },
@@ -27,12 +27,12 @@ function PdetailsSideBar() {
     : words.slice(0, wordLimit).join(" ") + (showBtn ? "..." : " ");
   return (
     <div className="w-[70%] pt-8">
-      <h1 className="text-2xl">Room in Manali, India</h1>
+      <h1 className="text-2xl">{data.description}</h1>
       <div className="bg-black opacity-10 w-full h-[1px] relative top-4"></div>
       <div className="flex gap-4 relative top-10">
         <img src={person} className="rounded-full  w-8 h-8" alt="" />
         <h1 className=" relative top-1 ">Hosted by</h1>
-        <p className="relative top-1 font-medium">Avash Neupane</p>
+        <p className="relative top-1 font-medium">{data.id}</p>
       </div>
       <div className="bg-black opacity-10 w-full h-[1px] relative top-16"></div>
       <div className="relative top-20">

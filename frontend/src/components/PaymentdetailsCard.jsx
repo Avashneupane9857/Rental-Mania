@@ -1,10 +1,14 @@
-function PaymentdetailsCard() {
+/* eslint-disable react/prop-types */
+function PaymentdetailsCard({ data }) {
   return (
     <div className="w-[30%]  ">
       <div className="w-[350px] h-[450px] bg-white border-[1px] p-6 top-10 relative shadow-2xl border-slate-200 rounded-2xl">
         <div className="flex gap-1">
           {" "}
-          <h1 className="text-xl font-sans font-medium"> &#8377; 32,000</h1>
+          <h1 className="text-xl font-sans font-medium">
+            {" "}
+            &#8377; {data.price}
+          </h1>
           <p className="text-[17px] top-1 relative">night</p>
         </div>
         <div className="relative top-7 ">

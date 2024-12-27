@@ -6,6 +6,7 @@ declare global {
         interface Request {
             userId: string;
             email: string;
+            username:string;
         }
     }
 }
@@ -31,9 +32,10 @@ export const middleware = (req: Request, res: Response, next: NextFunction) => {
              return
         }
 
-        const decoded = jwt.verify(token, secret) as { userId: string; email: string };
+        const decoded = jwt.verify(token, secret) as { userId: string, email: string, username:string  };
         req.userId = decoded.userId;
-        req.email = decoded.email;
+        req.email = decoded.email
+        req.username=decoded.username
  
 
  

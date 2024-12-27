@@ -74,8 +74,8 @@ if(!check){
     })
     return
 }
-
-const token=jwt.sign({userId:user.id,email:user.email},secret)
+const username =user.firstName+ user.lastName
+const token=jwt.sign({userId:user.id,email:user.email, username:username},secret)
 
 res.status(200).json({token})
 })

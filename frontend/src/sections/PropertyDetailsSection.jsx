@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import Host from "../components/Host";
 import Map from "../components/Map";
@@ -7,26 +8,47 @@ import PdetailsSideBar from "../components/PdetailsSideBar";
 import Reviews from "../components/Reviews";
 
 import TopNavbar from "../components/TopNavbar";
+import axios from "axios";
+import { backendUrl } from "../../config";
+import { useParams } from "react-router-dom";
 
 function PropertyDetailsSection() {
+  const { propertyId } = useParams();
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    const handleFetch = async () => {
+      try {
+        const fetch = await axios.get(`${backendUrl}/property/${propertyId}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        });
+        if (fetch.status == 200) {
+          setData(fetch.data.property);
+        }
+      } catch (e) {
+        alert("Error in fetching data", e);
+      }
+    };
+    handleFetch();
+  });
   return (
     <div className="w-[80%] mx-auto">
       <TopNavbar />
       <div className="h-[1px] relative top-14 w-[100%] bg-slate-400 opacity-20"></div>
-      <div className="relative top-20 text-[26px]">
-        Wooded Luxury Attic Suite w/ Mountain Views
-      </div>
 
-      <PdetailsPic />
+      <div className="relative top-20 text-[26px]">{data.title}</div>
+
+      <PdetailsPic key={data.id} data={data} />
       <div className="flex w-[100%] gap-28 mx-auto">
         {" "}
-        <PdetailsSideBar />
-        <PaymentdetailsCard />
+        <PdetailsSideBar data={data} />
+        <PaymentdetailsCard data={data} />
       </div>
-      <Map />
+      <Map data={data} />
       <div className="h-[1px] relative top-[350px] w-[100%] bg-slate-400 opacity-20"></div>
       <Reviews />
-      <Host />
+      <Host data={data} />
       <div className="relative top-96">
         {" "}
         <Footer />

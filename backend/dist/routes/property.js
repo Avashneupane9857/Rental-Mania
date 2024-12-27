@@ -38,6 +38,8 @@ exports.propertyRoutes.post("/list", upload.array("images"), authMiddleware_1.mi
     });
     const files = req.files;
     const userId = req.userId;
+    const username = req.username;
+    console.log(username);
     if (!userId) {
         res.json({ msg: "No userId passed from middleware" });
         return;
@@ -78,6 +80,7 @@ exports.propertyRoutes.post("/list", upload.array("images"), authMiddleware_1.mi
                 longitude: parseData.data.longitude,
                 price: parseData.data.price,
                 userId: userId,
+                username: username
             },
         });
         res.status(200).json({ property });

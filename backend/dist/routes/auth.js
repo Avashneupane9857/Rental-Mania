@@ -80,6 +80,7 @@ exports.authroutes.post("/login", (req, res) => __awaiter(void 0, void 0, void 0
         });
         return;
     }
-    const token = jsonwebtoken_1.default.sign({ userId: user.id, email: user.email }, secret);
+    const username = user.firstName + user.lastName;
+    const token = jsonwebtoken_1.default.sign({ userId: user.id, email: user.email, username: username }, secret);
     res.status(200).json({ token });
 }));

@@ -1,6 +1,7 @@
+/* eslint-disable react/prop-types */
 import { person } from "../assets";
 
-function Host() {
+function Host({ data }) {
   return (
     <div className="top-[450px]  relative">
       <h1 className="text-2xl">Meet your Host</h1>
@@ -14,7 +15,7 @@ function Host() {
               className="w-[150px] h-[150px] rounded-full"
               alt=""
             />
-            <h1 className="text-2xl">Daniel</h1>
+            <h1 className="">{data.userId}</h1>
           </div>
           <div className="pl-32">
             {" "}

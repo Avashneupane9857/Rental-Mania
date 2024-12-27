@@ -30,6 +30,8 @@ propertyRoutes.post(
     });
     const files = req.files as Express.Multer.File[];
     const userId = req.userId;
+    const username=req.username;
+    console.log(username)
 
 
     if (!userId) {
@@ -77,6 +79,7 @@ propertyRoutes.post(
           longitude: parseData.data.longitude!,
           price: parseData.data.price,
           userId: userId,
+          username:username
         },
       });
       res.status(200).json({ property });

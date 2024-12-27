@@ -51,8 +51,9 @@ model Listing {
   latitude  Float?
   longitude Float?
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade) //yo id ko user ley aafnio id delete gareypachi sabai data will be deleted 
+  userId   String
+  username String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade) //yo id ko user ley aafnio id delete gareypachi sabai data will be deleted 
 
   // Reservations for this listing yo property ko lai 
   reservations Reservation[]

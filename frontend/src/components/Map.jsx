@@ -1,9 +1,10 @@
+/* eslint-disable react/prop-types */
 import GoogleMapReact from "google-map-react";
-function Map() {
+function Map({ data }) {
   const defaultProps = {
     center: {
-      lat: 28.3949,
-      lng: 84.124,
+      lat: data.latitude,
+      lng: data.longitude,
     },
     zoom: 11,
   };
@@ -17,9 +18,7 @@ function Map() {
           defaultCenter={defaultProps.center}
           defaultZoom={defaultProps.zoom}
         ></GoogleMapReact>
-        <h1 className="font-sans font-medium p-3 text-[20px]">
-          Rome and Italy
-        </h1>
+        <h1 className="font-sans font-medium p-3 text-[20px]">{data.title}</h1>
       </div>
     </div>
   );

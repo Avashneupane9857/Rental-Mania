@@ -1,6 +1,6 @@
 import { prop3, prop6, prop5, prop9 } from "../assets";
 
-const PdetailsPic = () => {
+const PdetailsPic = ({ data }) => {
   const images = [
     { id: 1, src: prop3, isMain: true },
     { id: 2, src: prop9 },
@@ -8,7 +8,7 @@ const PdetailsPic = () => {
     { id: 4, src: prop3 },
     { id: 5, src: prop5 },
   ];
-
+  console.log(data);
   return (
     <div className="container mx-auto pt-24">
       <div className="flex flex-col md:flex-row gap-2">
