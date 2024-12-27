@@ -41,7 +41,7 @@ model Listing {
   description   String
   imageSrc      String[]
   createdAt     DateTime @default(now())
-  category      String
+  category      Category
   roomCount     Int
   bathroomCount Int
   guestCount    Int
@@ -100,3 +100,10 @@ model Review {
 }
 
 //enum for category
+enum Category {
+  VILLA
+  HOME
+  CABIN
+  FARMS
+  CAMP
+}
