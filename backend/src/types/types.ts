@@ -17,7 +17,7 @@ export const listingSchema = z.object({
 
     title: z.string().min(1, { message: "Title is required" }), 
     description: z.string().min(1, { message: "Description is required" }), 
-    imageSrc: z.array(z.string().url()).min(1, { message: "At least one image URL is required" }),  
+ 
     category: z.enum(['VILLA', 'HOME', 'CABIN', 'FARMS', 'CAMP'], {
         required_error: "Category is required",
         invalid_type_error: "Category must be one of: VILLA, HOME, CABIN, FARMS, CAMP"

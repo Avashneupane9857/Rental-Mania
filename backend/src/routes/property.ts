@@ -2,30 +2,68 @@ import { Request, Response, Router } from "express";
 import { middleware } from "../middleware.ts/authMiddleware";
 import { listingSchema } from "../types/types";
 import { prisma } from "../db/prisma";
+import multer from "multer";
+// upload images that will be saved to S3 bucket and in frontend fetch from there 
 
 export const propertyRoutes = Router();
 
+import path from "path";
+
+// Configure multer for file upload
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/"); // Make sure this directory exists
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+
+// File filter to accept only images
+const fileFilter = (req: any, file: any, cb: any) => {
+  if (file.mimetype.startsWith("image/")) {
+    cb(null, true);
+  } else {
+    cb(new Error("Not an image! Please upload an image."), false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024, 
+  },
+});
 propertyRoutes.post(
   "/list",
+  upload.array("image"),
   middleware,
   async (req: Request, res: Response) => {
     const parseData = listingSchema.safeParse(req.body);
+    const file=req.file
     const userId = req.userId;
     console.log(userId)
     if (!userId) {
       res.json({ msg: "No userId passed from middleware" });
     }
+    if (file) {
+      res.status(400).json({ msg: "No image file uploaded" });
+      return
+   }
+    
     try {
       if (!parseData.success) {
         res.status(400).json({ msg: "Validation error" });
         return;
       }
+      
 
       const property = await prisma.listing.create({
         data: {
           title: parseData.data.title,
           description: parseData.data.description,
-          imageSrc: parseData.data.imageSrc,
+          imageSrc: file ,
           category: parseData.data.category,
           roomCount: parseData.data.roomCount,
           bathroomCount: parseData.data.bathroomCount,

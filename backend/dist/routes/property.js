@@ -14,6 +14,7 @@ const express_1 = require("express");
 const authMiddleware_1 = require("../middleware.ts/authMiddleware");
 const types_1 = require("../types/types");
 const prisma_1 = require("../db/prisma");
+// upload images that will be saved to S3 bucket and in frontend fetch from there directly
 exports.propertyRoutes = (0, express_1.Router)();
 exports.propertyRoutes.post("/list", authMiddleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const parseData = types_1.listingSchema.safeParse(req.body);
