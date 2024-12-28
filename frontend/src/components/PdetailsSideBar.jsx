@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 import { cat1, cat2, cat3, cat6, person } from "../assets";
 
@@ -32,7 +33,7 @@ function PdetailsSideBar({ data }) {
       <div className="flex gap-4 relative top-10">
         <img src={person} className="rounded-full  w-8 h-8" alt="" />
         <h1 className=" relative top-1 ">Hosted by</h1>
-        <p className="relative top-1 font-medium">{data.id}</p>
+        <p className="relative top-1 font-medium">{data.username}</p>
       </div>
       <div className="bg-black opacity-10 w-full h-[1px] relative top-16"></div>
       <div className="relative top-20">
@@ -52,16 +53,16 @@ function PdetailsSideBar({ data }) {
         <h1 className="relative top-40 font-medium mb-5 text-2xl">
           What place offers
         </h1>
-        {col1.map((data) => (
-          <div key={data.id} className="relative top-40 flex gap-5">
+        {col1.map((datas) => (
+          <div key={datas.id} className="relative top-40 flex gap-5">
             <div className="mb-6">
               {" "}
-              <img className="w-8  h-8" src={data.img} alt="" />
+              <img className="w-8  h-8" src={datas.img} alt="" />
             </div>
             <div>
               {" "}
               <h1 className="font-thin text-[18px] relative top-1 text-slate-800">
-                {data.title}
+                {datas.title}
               </h1>
             </div>
             {/* {col2.map((data) => (

@@ -15,7 +15,7 @@ function Host({ data }) {
               className="w-[150px] h-[150px] rounded-full"
               alt=""
             />
-            <h1 className="">{data.userId}</h1>
+            <h1 className="">{data.username}</h1>
           </div>
           <div className="pl-32">
             {" "}

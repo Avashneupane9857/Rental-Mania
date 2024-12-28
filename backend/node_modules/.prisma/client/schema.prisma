@@ -102,9 +102,15 @@ model Review {
 
 //enum for category
 enum Category {
-  VILLA
-  HOME
-  CABIN
-  FARMS
-  CAMP
+  Villa
+  Home
+  Cabin
+  Farms
+  Camp
+  Beach
+  Bungalow
+  Treehouse
+  Penthouse
+  Castle
+  Mansion
 }

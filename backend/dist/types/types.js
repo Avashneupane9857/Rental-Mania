@@ -17,9 +17,21 @@ exports.LoginSchema = zod_1.z.object({
 exports.listingSchema = zod_1.z.object({
     title: zod_1.z.string().min(1, { message: "Title is required" }),
     description: zod_1.z.string().min(1, { message: "Description is required" }),
-    category: zod_1.z.enum(['VILLA', 'HOME', 'CABIN', 'FARMS', 'CAMP'], {
+    category: zod_1.z.enum([
+        'Villa',
+        'Home',
+        'Cabin',
+        'Farms',
+        'Camp',
+        'Beach',
+        'Bungalow',
+        'Treehouse',
+        'Penthouse',
+        'Castle',
+        'Mansion'
+    ], {
         required_error: "Category is required",
-        invalid_type_error: "Category must be one of: VILLA, HOME, CABIN, FARMS, CAMP"
+        invalid_type_error: "Category must be one of: Villa, Home, Cabin, Farms, Camp, Beach, Bungalow, Treehouse, Penthouse, Castle, Mansion"
     }),
     roomCount: zod_1.z.number().int().min(1, { message: "Room count must be at least 1" }),
     bathroomCount: zod_1.z.number().int().min(1, { message: "Bathroom count must be at least 1" }),
