@@ -79,7 +79,10 @@ propertyRoutes.post(
           longitude: parseData.data.longitude!,
           price: parseData.data.price,
           userId: userId,
-          username:username
+          username:username,
+
+          locationName:parseData.data.locationName,
+          propertyName:parseData.data.propertyName
         },
       });
       res.status(200).json({ property });

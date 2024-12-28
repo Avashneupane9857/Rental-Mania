@@ -40,6 +40,8 @@ export const listingSchema = z.object({
     price: z.number().min(0, { message: "Price must be a positive number" }),  
     latitude: z.number().optional(),
     longitude: z.number().optional(),
+    locationName:z.string(),
+    propertyName:z.string()
  
     
   });

@@ -61,6 +61,8 @@ model Listing {
   reviews      Review[]
   // Users who favorited yo property
   favoritedBy  User[]        @relation("FavoriteListings")
+  locationName String
+  propertyName String
 
   @@index([userId])
 }

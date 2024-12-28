@@ -80,7 +80,9 @@ exports.propertyRoutes.post("/list", upload.array("images"), authMiddleware_1.mi
                 longitude: parseData.data.longitude,
                 price: parseData.data.price,
                 userId: userId,
-                username: username
+                username: username,
+                locationName: parseData.data.locationName,
+                propertyName: parseData.data.propertyName
             },
         });
         res.status(200).json({ property });
@@ -106,7 +108,6 @@ exports.propertyRoutes.get("/filter", authMiddleware_1.middleware, (req, res) =>
         if (price && typeof price === "string" && price.trim() !== "") {
             query.price = parseInt(price.trim()); // Convert to number since price in your schema appears to be numeric
         }
-        console.log("Filter query:", query);
         const property = yield prisma_1.prisma.listing.findMany({
             where: query,
         });

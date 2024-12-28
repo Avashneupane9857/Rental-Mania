@@ -39,4 +39,6 @@ exports.listingSchema = zod_1.z.object({
     price: zod_1.z.number().min(0, { message: "Price must be a positive number" }),
     latitude: zod_1.z.number().optional(),
     longitude: zod_1.z.number().optional(),
+    locationName: zod_1.z.string(),
+    propertyName: zod_1.z.string()
 });
