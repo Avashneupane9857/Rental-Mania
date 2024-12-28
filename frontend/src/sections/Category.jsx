@@ -2,11 +2,11 @@ import { cat1, cat2, cat3, cat4, cat5, cat6 } from "../assets";
 import { ChevronRight } from "lucide-react";
 function Category() {
   const categories = [
-    { id: 1, icon: cat1, category: "Farns" },
+    { id: 1, icon: cat1, category: "Farms" },
     { id: 2, icon: cat2, category: "Villa" },
     { id: 3, icon: cat3, category: "Home" },
     { id: 4, icon: cat4, category: "Cabin" },
-    { id: 5, icon: cat5, category: "Farns" },
+    { id: 5, icon: cat5, category: "Farms" },
     { id: 6, icon: cat6, category: "Camp" },
     { id: 7, icon: cat1, category: "Beach " },
     { id: 8, icon: cat2, category: "Mansion" },
