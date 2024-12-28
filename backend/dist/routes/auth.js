@@ -30,18 +30,18 @@ exports.authroutes.post("/signup", (req, res) => __awaiter(void 0, void 0, void 
     if (!parsedData.success) {
         res.status(400).json({
             msg: "Validation Error",
-            erorrs: parsedData.error.errors
+            erorrs: parsedData.error.errors,
         });
         return;
     }
     const checkUser = yield prisma_1.prisma.user.findUnique({
         where: {
-            email: parsedData.data.email
-        }
+            email: parsedData.data.email,
+        },
     });
     if (checkUser) {
         res.status(400).json({
-            msg: "User already exits"
+            msg: "User already exits",
         });
     }
     const hashedPassword = yield bcrypt_1.default.hash(parsedData.data.password, 10);
@@ -52,8 +52,8 @@ exports.authroutes.post("/signup", (req, res) => __awaiter(void 0, void 0, void 
             lastName: parsedData.data.lastName,
             hashedPassword: hashedPassword,
             phoneNum: parsedData.data.phoneNum,
-            profession: parsedData.data.profession
-        }
+            profession: parsedData.data.profession,
+        },
     });
     res.status(200).json({ user });
 }));
@@ -66,8 +66,8 @@ exports.authroutes.post("/login", (req, res) => __awaiter(void 0, void 0, void 0
     }
     const user = yield prisma_1.prisma.user.findUnique({
         where: {
-            email: (_a = parsedData.data) === null || _a === void 0 ? void 0 : _a.email
-        }
+            email: (_a = parsedData.data) === null || _a === void 0 ? void 0 : _a.email,
+        },
     });
     if (!user) {
         res.status(400).json({ msg: "User doesnot exist" });
@@ -80,7 +80,7 @@ exports.authroutes.post("/login", (req, res) => __awaiter(void 0, void 0, void 0
         });
         return;
     }
-    const username = user.firstName + user.lastName;
+    const username = user.firstName + " " + user.lastName;
     const token = jsonwebtoken_1.default.sign({ userId: user.id, email: user.email, username: username }, secret);
     res.status(200).json({ token });
 }));
