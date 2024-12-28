@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
+import { GoogleMap, MarkerF, useLoadScript } from "@react-google-maps/api";
 import { useMemo } from "react";
 import { google_map_api } from "../../config";
 
@@ -38,7 +38,7 @@ function Map({ data }) {
               fullscreenControl: true,
             }}
           >
-            <Marker
+            <MarkerF
               position={center}
               animation={2}
               visible={true}
