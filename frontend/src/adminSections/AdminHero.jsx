@@ -14,13 +14,10 @@ function AdminHero() {
       </div>
       <div className="relative top-32 flex gap-4">
         <button className="border-[1px] rounded-2xl hover:bg-[#EBEBEB] h-10 w-36">
-          Checking out
+          Bookings
         </button>
         <button className="border-[1px] rounded-2xl hover:bg-[#EBEBEB] w-36">
           Currently hosting
-        </button>
-        <button className="border-[1px] rounded-2xl hover:bg-[#EBEBEB] w-36">
-          Upcoming
         </button>
       </div>
       <div className="relative top-44">
