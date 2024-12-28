@@ -31,7 +31,7 @@ function PropertyDetailsSection() {
       }
     };
     handleFetch();
-  });
+  }, []);
   return (
     <div className="w-[80%] mx-auto">
       <TopNavbar />
@@ -39,7 +39,7 @@ function PropertyDetailsSection() {
 
       <div className="relative top-20 text-[26px]">{data.title}</div>
 
-      <PdetailsPic key={data.id} data={data} />
+      <PdetailsPic data={data} />
       <div className="flex w-[100%] gap-28 mx-auto">
         {" "}
         <PdetailsSideBar data={data} />

@@ -37,8 +37,8 @@ exports.listingSchema = zod_1.z.object({
     bathroomCount: zod_1.z.number().int().min(1, { message: "Bathroom count must be at least 1" }),
     guestCount: zod_1.z.number().int().min(1, { message: "Guest count must be at least 1" }),
     price: zod_1.z.number().min(0, { message: "Price must be a positive number" }),
-    latitude: zod_1.z.number().optional(),
-    longitude: zod_1.z.number().optional(),
+    latitude: zod_1.z.number(),
+    longitude: zod_1.z.number(),
     locationName: zod_1.z.string(),
     propertyName: zod_1.z.string()
 });

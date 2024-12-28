@@ -48,8 +48,8 @@ model Listing {
   price         Float
 
   // Location coordinates exact location produce garna lai   
-  latitude  Float?
-  longitude Float?
+  latitude  Float
+  longitude Float
 
   userId   String
   username String

@@ -13,8 +13,7 @@ function TopNavbar() {
   };
 
   const handleLogout = () => {
-    // Add your logout logic here
-    // For example: clear localStorage, reset auth state, etc.
+    localStorage.removeItem("authToken");
     navigate("/login");
   };
 
@@ -22,14 +21,12 @@ function TopNavbar() {
     setShowMenu(!showMenu);
   };
 
-  // Close menu when clicking outside
   const handleClickOutside = (e) => {
     if (!e.target.closest(".profile-menu-container")) {
       setShowMenu(false);
     }
   };
 
-  // Add event listener when component mounts
   useState(() => {
     document.addEventListener("click", handleClickOutside);
     return () => {

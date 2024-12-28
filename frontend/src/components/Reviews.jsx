@@ -3,12 +3,21 @@ import { person } from "../assets";
 function Reviews() {
   const reviews = [
     {
-      id: 0,
+      id: 7,
       img: person,
       name: "Trisheela",
       review:
         "I felt very welcome and at home at Daniela's place. She is a very kind host and I had a wonderful stay at her home!",
     },
+
+    {
+      id: 9,
+      img: person,
+      name: "Trisheela",
+      review:
+        "I felt very welcome and at home at Daniela's place. She is a very kind host and I had a wonderful stay at her home!",
+    },
+
     {
       id: 1,
       img: person,
@@ -17,70 +26,22 @@ function Reviews() {
         "I felt very welcome and at home at Daniela's place. She is a very kind host and I had a wonderful stay at her home!",
     },
     {
-      id: 1,
+      id: 2,
       img: person,
       name: "Trisheela",
       review:
         "I felt very welcome and at home at Daniela's place. She is a very kind host and I had a wonderful stay at her home!",
     },
     {
-      id: 1,
+      id: 3,
       img: person,
       name: "Trisheela",
       review:
         "I felt very welcome and at home at Daniela's place. She is a very kind host and I had a wonderful stay at her home!",
     },
+
     {
-      id: 1,
-      img: person,
-      name: "Trisheela",
-      review:
-        "I felt very welcome and at home at Daniela's place. She is a very kind host and I had a wonderful stay at her home!",
-    },
-    {
-      id: 1,
-      img: person,
-      name: "Trisheela",
-      review:
-        "I felt very welcome and at home at Daniela's place. She is a very kind host and I had a wonderful stay at her home!",
-    },
-    {
-      id: 1,
-      img: person,
-      name: "Trisheela",
-      review:
-        "I felt very welcome and at home at Daniela's place. She is a very kind host and I had a wonderful stay at her home!",
-    },
-    {
-      id: 1,
-      img: person,
-      name: "Trisheela",
-      review:
-        "I felt very welcome and at home at Daniela's place. She is a very kind host and I had a wonderful stay at her home!",
-    },
-    {
-      id: 1,
-      img: person,
-      name: "Trisheela",
-      review:
-        "I felt very welcome and at home at Daniela's place. She is a very kind host and I had a wonderful stay at her home!",
-    },
-    {
-      id: 1,
-      img: person,
-      name: "Trisheela",
-      review:
-        "I felt very welcome and at home at Daniela's place. She is a very kind host and I had a wonderful stay at her home!",
-    },
-    {
-      id: 1,
-      img: person,
-      name: "Trisheela",
-      review:
-        "I felt very welcome and at home at Daniela's place. She is a very kind host and I had a wonderful stay at her home!",
-    },
-    {
-      id: 1,
+      id: 10,
       img: person,
       name: "Trisheela",
       review:

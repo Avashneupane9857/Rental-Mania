@@ -38,8 +38,8 @@ export const listingSchema = z.object({
     bathroomCount: z.number().int().min(1, { message: "Bathroom count must be at least 1" }),  
     guestCount: z.number().int().min(1, { message: "Guest count must be at least 1" }),  
     price: z.number().min(0, { message: "Price must be a positive number" }),  
-    latitude: z.number().optional(),
-    longitude: z.number().optional(),
+    latitude: z.number(),
+    longitude: z.number(),
     locationName:z.string(),
     propertyName:z.string()
  

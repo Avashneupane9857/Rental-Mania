@@ -33,13 +33,14 @@ exports.propertyRoutes.post("/list", upload.array("images"), authMiddleware_1.mi
         bathroomCount: +req.body.bathroomCount,
         guestCount: +req.body.guestCount,
         latitude: +req.body.latitude,
-        longtitude: +req.body.longitude,
-        price: +req.body.price
+        longitude: +req.body.longitude,
+        price: +req.body.price,
+        propertyName: req.body.propertyName,
+        locationName: req.body.locationName
     });
     const files = req.files;
     const userId = req.userId;
     const username = req.username;
-    console.log(username);
     if (!userId) {
         res.json({ msg: "No userId passed from middleware" });
         return;

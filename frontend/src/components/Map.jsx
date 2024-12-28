@@ -8,7 +8,7 @@ function Map({ data }) {
     },
     zoom: 11,
   };
-
+  console.log(data.latitude, data.longitude);
   return (
     <div className="relative top-56">
       <h1 className="text-2xl">Where you will be</h1>
@@ -18,7 +18,9 @@ function Map({ data }) {
           defaultCenter={defaultProps.center}
           defaultZoom={defaultProps.zoom}
         ></GoogleMapReact>
-        <h1 className="font-sans font-medium p-3 text-[20px]">{data.title}</h1>
+        <h1 className="font-sans font-medium p-3 text-[20px]">
+          {data.locationName}
+        </h1>
       </div>
     </div>
   );

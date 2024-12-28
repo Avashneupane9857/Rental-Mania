@@ -16,10 +16,9 @@ function PdetailsSideBar({ data }) {
     { id: 10, img: cat6, title: "Dedicated workspace" },
   ];
   const col1 = Enum.slice(0, 5);
-  //   const col2 = Enum.slice(5);
+
   const [isExpanded, setIsExpanded] = useState(false);
-  const text =
-    "Tra - A Boutique stay, is a premWe l is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the Your room is on the second (U.S. 3rd) floor, with the best views on the house over the Firth of Forth to Fife. You will usually be able to relax in the elegant drawing room, and breakfast under the eye of family portraits in the ground floor dining room, enjoying home made bread and jams. The tides of Edinburgh family life will wash around the edges of your stay as you have the chance of an insight into what it is like to live in our wonderful city.hereo is";
+  const text = `${data.description}`;
   const words = text.split(" ");
   const wordLimit = 50;
   const showBtn = words.length > wordLimit;
@@ -28,7 +27,7 @@ function PdetailsSideBar({ data }) {
     : words.slice(0, wordLimit).join(" ") + (showBtn ? "..." : " ");
   return (
     <div className="w-[70%] pt-8">
-      <h1 className="text-2xl">{data.description}</h1>
+      <h1 className="text-2xl">{data.propertyName}</h1>
       <div className="bg-black opacity-10 w-full h-[1px] relative top-4"></div>
       <div className="flex gap-4 relative top-10">
         <img src={person} className="rounded-full  w-8 h-8" alt="" />
@@ -65,9 +64,6 @@ function PdetailsSideBar({ data }) {
                 {datas.title}
               </h1>
             </div>
-            {/* {col2.map((data) => (
-           
-            ))} */}
           </div>
         ))}
       </div>
