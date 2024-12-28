@@ -113,7 +113,7 @@ propertyRoutes.get(
         query.price = parseInt(price.trim()); // Convert to number since price in your schema appears to be numeric
       }
 
-      console.log("Filter query:", query);
+     
 
       const property = await prisma.listing.findMany({
         where: query,

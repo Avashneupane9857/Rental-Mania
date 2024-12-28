@@ -4,6 +4,8 @@ import { ChevronRight, ChevronLeft } from "lucide-react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { backendUrl } from "../../config";
+import Category from "../sections/Category";
+
 const PropertyCard = ({ property }) => {
   const [currentImage, setCurrentImage] = useState(0);
   const [loadedImages, setLoadedImages] = useState({});
@@ -112,37 +114,65 @@ function Properties() {
   const [properties, setProperties] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  const fetchProperties = async (category = null) => {
+    setLoading(true);
+    try {
+      let url = `${backendUrl}/property`;
+      if (category) {
+        url = `${backendUrl}/property/filter?category=${category}`;
+      }
+
+      const { data } = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+      });
+
+      if (data.msg && data.msg.includes("No properties found")) {
+        setProperties([]);
+      } else {
+        setProperties(data.property);
+      }
+    } catch (err) {
+      setError(err.response?.data?.msg || "Failed to fetch properties");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchProperties = async () => {
-      try {
-        const { data } = await axios.get(`${backendUrl}/property`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-          },
-        });
-        setProperties(data.property);
-      } catch (err) {
-        setError(err.response?.data?.msg || "Failed to fetch properties");
-      } finally {
-        setLoading(false);
-      }
-    };
+    fetchProperties(selectedCategory);
+  }, [selectedCategory]);
 
-    fetchProperties();
-  }, []);
+  const handleCategorySelect = (category) => {
+    setSelectedCategory(category === selectedCategory ? null : category);
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div className="text-red-500">Error: {error}</div>;
 
   return (
-    <div className="container mx-auto px-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {properties.map((property) => (
-          <PropertyCard key={property.id} property={property} />
-        ))}
+    <>
+      <Category
+        onCategorySelect={handleCategorySelect}
+        selectedCategory={selectedCategory}
+      />
+      <div className="container mx-auto px-4">
+        {properties.length === 0 ? (
+          <div className="text-center mt-32">
+            No properties found for this category
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {properties.map((property) => (
+              <PropertyCard key={property.id} property={property} />
+            ))}
+          </div>
+        )}
       </div>
-    </div>
+    </>
   );
 }
 
