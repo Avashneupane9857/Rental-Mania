@@ -34,28 +34,35 @@ exports.authroutes.post("/signup", (req, res) => __awaiter(void 0, void 0, void 
         });
         return;
     }
-    const checkUser = yield prisma_1.prisma.user.findUnique({
-        where: {
-            email: parsedData.data.email,
-        },
-    });
-    if (checkUser) {
-        res.status(400).json({
-            msg: "User already exits",
+    try {
+        const checkUser = yield prisma_1.prisma.user.findUnique({
+            where: {
+                email: parsedData.data.email,
+            },
         });
+        if (checkUser) {
+            res.status(400).json({
+                msg: "User already exits",
+            });
+        }
+        const hashedPassword = yield bcrypt_1.default.hash(parsedData.data.password, 10);
+        const user = yield prisma_1.prisma.user.create({
+            data: {
+                email: parsedData.data.email,
+                firstName: parsedData.data.firstName,
+                lastName: parsedData.data.lastName,
+                hashedPassword: hashedPassword,
+                phoneNum: parsedData.data.phoneNum,
+                profession: parsedData.data.profession,
+            },
+        });
+        res.status(200).json({ user });
     }
-    const hashedPassword = yield bcrypt_1.default.hash(parsedData.data.password, 10);
-    const user = yield prisma_1.prisma.user.create({
-        data: {
-            email: parsedData.data.email,
-            firstName: parsedData.data.firstName,
-            lastName: parsedData.data.lastName,
-            hashedPassword: hashedPassword,
-            phoneNum: parsedData.data.phoneNum,
-            profession: parsedData.data.profession,
-        },
-    });
-    res.status(200).json({ user });
+    catch (e) {
+        console.log(e);
+        res.status(400).json({ msg: "Error while creating user" });
+        return;
+    }
 }));
 exports.authroutes.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 import { backendUrl } from "../../config";
-import { Beaker } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
 const ListProperties = () => {
   const [formData, setFormData] = useState({
     title: "",
@@ -32,7 +33,7 @@ const ListProperties = () => {
       images: e.target.files,
     }));
   };
-
+  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -64,6 +65,7 @@ const ListProperties = () => {
 
       if (response.status == 200) {
         alert("Property listing submitted successfully!");
+        navigate("/hosting/listing");
       } else {
         alert("Failed to submit property listing");
       }

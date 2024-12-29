@@ -10,7 +10,7 @@ function ANavbar() {
   };
 
   const handlehostListing = () => {
-    navigate("/hosting/listing");
+    navigate("/hosting/listings");
   };
   return (
     <div className="">

@@ -5,7 +5,7 @@ import LoginPage from "../pages/LoginPage";
 import SignupPage from "../pages/SignupPage";
 import HostLanding from "../adminPages/HostLanding";
 import HostListing from "../adminPages/HostListing";
-import ListProperties from "../pages/ListProperties";
+import ListProperties from "../adminPages/ListProperties";
 
 function Routing() {
   return (

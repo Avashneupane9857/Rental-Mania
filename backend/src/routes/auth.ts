@@ -20,7 +20,7 @@ authroutes.post("/signup", async (req: Request, res: Response) => {
       erorrs: parsedData.error.errors,
     });
     return;
-  }
+  }  try{
   const checkUser = await prisma.user.findUnique({
     where: {
       email: parsedData.data.email,
@@ -32,18 +32,26 @@ authroutes.post("/signup", async (req: Request, res: Response) => {
     });
   }
   const hashedPassword = await bcrypt.hash(parsedData.data.password, 10);
-  const user = await prisma.user.create({
-    data: {
-      email: parsedData.data.email,
-      firstName: parsedData.data.firstName,
-      lastName: parsedData.data.lastName,
-      hashedPassword: hashedPassword,
-      phoneNum: parsedData.data.phoneNum,
-      profession: parsedData.data.profession,
-    },
-  });
 
-  res.status(200).json({ user });
+    const user = await prisma.user.create({
+      data: {
+        email: parsedData.data.email,
+        firstName: parsedData.data.firstName,
+        lastName: parsedData.data.lastName,
+        hashedPassword: hashedPassword,
+        phoneNum: parsedData.data.phoneNum,
+        profession: parsedData.data.profession,
+      },
+    });
+  
+    res.status(200).json({ user });
+  }
+  catch(e){
+    console.log(e)
+    res.status(400).json({msg:"Error while creating user"})
+    return
+  }
+
 });
 
 authroutes.post("/login", async (req: Request, res: Response) => {
