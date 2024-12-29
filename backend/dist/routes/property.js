@@ -194,9 +194,6 @@ exports.propertyRoutes.get("/host/properties", authMiddleware_1.middleware, (req
             where: {
                 userId: userId
             },
-            orderBy: {
-                createdAt: 'desc'
-            }
         });
         if (hostProperties.length === 0) {
             res.status(200).json({
@@ -206,7 +203,7 @@ exports.propertyRoutes.get("/host/properties", authMiddleware_1.middleware, (req
             return;
         }
         res.status(200).json({
-            hostProperties
+            hostProperties,
         });
     }
     catch (error) {
