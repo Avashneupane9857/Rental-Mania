@@ -30,50 +30,9 @@ function HostListing() {
     handleResponse();
   }, [token]);
 
-  return (
-    <div className="px-11">
-      <ANavbar />
-      <h1 className="relative top-20 p-8 font-medium text-slate-700 text-2xl">
-        Your Listings
-      </h1>
-      <div className="flex flex-wrap gap-8">
-        {datas.map((data) => (
-          <div className="w-[400px]" key={data.id}>
-            <div className="relative top-20 rounded-lg bg-[#f7f7f7] w-[400px] h-[350px]">
-              <img
-                src={data.imageSrc[0] || "default-image-url.jpg"}
-                width={400}
-                height={350}
-                alt={data.propertyName || "Property Image"}
-                className="rounded-t-lg"
-              />
-              <p className="px-5 py-2">{data.locationName}</p>
-              <p className="px-5 py-2">{data.propertyName}</p>
-            </div>
-            <div className="relative top-20 p-5 flex justify-between">
-              <button
-                className="text-red-600 border-[1px] w-16 hover:text-red-400 border-black rounded-lg"
-                onClick={() => handleDelete(data.id)}
-              >
-                Delete
-              </button>
-              <button
-                className="text-red-600 border-[1px] w-16 hover:text-red-400 border-black rounded-lg"
-                onClick={() => handleEdit(data.id)}
-              >
-                Edit
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
   function handleDelete(id) {
     if (!window.confirm("Are you sure you want to delete this property?"))
       return;
-
     axios
       .delete(`${backendUrl}/property/${id}`, {
         headers: {
@@ -82,7 +41,6 @@ function HostListing() {
       })
       .then((response) => {
         alert(response.data.msg || "Property deleted successfully!");
-
         setDatas((prevDatas) => prevDatas.filter((data) => data.id !== id));
       })
       .catch((error) => {
@@ -94,11 +52,58 @@ function HostListing() {
       });
   }
 
-  // Function to handle edit
   function handleEdit(id) {
     console.log(`Edit property with ID: ${id}`);
     navigate(`/hosting/property/edit/${id}`);
   }
+
+  return (
+    <div className="min-h-screen bg-white">
+      <ANavbar />
+      <div className="px-6 pt-24 pb-12">
+        <h1 className="font-medium text-slate-700 text-2xl mb-8">
+          Your Listings
+        </h1>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {datas.map((data) => (
+            <div key={data.id} className="flex flex-col">
+              <div className="bg-[#f7f7f7] rounded-lg overflow-hidden">
+                <div className="aspect-[4/3] relative">
+                  <img
+                    src={data.imageSrc[0] || "default-image-url.jpg"}
+                    alt={data.propertyName || "Property Image"}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                </div>
+                <div className="p-4">
+                  <p className="text-gray-800 font-medium">
+                    {data.locationName}
+                  </p>
+                  <p className="text-gray-600 mt-1">{data.propertyName}</p>
+                </div>
+              </div>
+
+              <div className="flex justify-between mt-4 gap-4">
+                <button
+                  onClick={() => handleDelete(data.id)}
+                  className="flex-1 px-4 py-2 text-red-600 border border-gray-300 rounded-lg hover:bg-red-50 transition-colors"
+                >
+                  Delete
+                </button>
+                <button
+                  onClick={() => handleEdit(data.id)}
+                  className="flex-1 px-4 py-2 text-black border border-gray-300 rounded-lg hover:bg-blue-50 transition-colors"
+                >
+                  Edit
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default HostListing;

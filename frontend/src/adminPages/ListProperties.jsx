@@ -65,7 +65,7 @@ const ListProperties = () => {
 
       if (response.status == 200) {
         alert("Property listing submitted successfully!");
-        navigate("/hosting/listing");
+        navigate("/hosting/listings");
       } else {
         alert("Failed to submit property listing");
       }
