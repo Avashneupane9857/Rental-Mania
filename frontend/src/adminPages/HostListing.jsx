@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import ANavbar from "../adminComponents/ANavbar";
 import axios from "axios";
 import { backendUrl } from "../../config";
+import { useNavigate } from "react-router-dom";
 
 function HostListing() {
+  const navigate = useNavigate();
   const token = localStorage.getItem("authToken");
   const [datas, setDatas] = useState([]);
 
@@ -95,7 +97,7 @@ function HostListing() {
   // Function to handle edit
   function handleEdit(id) {
     console.log(`Edit property with ID: ${id}`);
-    // Add your edit functionality here
+    navigate(`/hosting/property/edit/${id}`);
   }
 }
 
