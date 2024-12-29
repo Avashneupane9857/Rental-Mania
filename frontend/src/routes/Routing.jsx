@@ -5,6 +5,7 @@ import LoginPage from "../pages/LoginPage";
 import SignupPage from "../pages/SignupPage";
 import HostLanding from "../adminPages/HostLanding";
 import HostListing from "../adminPages/HostListing";
+import ListProperties from "../pages/ListProperties";
 
 function Routing() {
   return (
@@ -18,7 +19,8 @@ function Routing() {
           element={<PropertyDetailsPage />}
         />
         <Route path="/hosting" element={<HostLanding />} />
-        <Route path="/hosting/listing" element={<HostListing />} />
+        <Route path="/hosting/listings" element={<HostListing />} />
+        <Route path="/become-a-host" element={<ListProperties />} />
       </Routes>
     </div>
   );
