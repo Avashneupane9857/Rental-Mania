@@ -242,7 +242,7 @@ propertyRoutes.get(
       }
 
       res.status(200).json({
-        properties: hostProperties
+         hostProperties
       });
     } catch (error) {
       console.error("Error fetching host properties:", error);

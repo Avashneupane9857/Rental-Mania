@@ -183,3 +183,34 @@ exports.propertyRoutes.delete("/:propertyId", authMiddleware_1.middleware, (req,
         msg: `Property with ID ${propertyId} deleted successfully. ${property}`,
     });
 }));
+exports.propertyRoutes.get("/host/properties", authMiddleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.userId;
+    if (!userId) {
+        res.status(401).json({ msg: "Unauthorized: No user ID provided" });
+        return;
+    }
+    try {
+        const hostProperties = yield prisma_1.prisma.listing.findMany({
+            where: {
+                userId: userId
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+        if (hostProperties.length === 0) {
+            res.status(200).json({
+                msg: "No properties found for this host",
+                properties: []
+            });
+            return;
+        }
+        res.status(200).json({
+            hostProperties
+        });
+    }
+    catch (error) {
+        console.error("Error fetching host properties:", error);
+        res.status(500).json({ msg: "Error fetching host properties" });
+    }
+}));
