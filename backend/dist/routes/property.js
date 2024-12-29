@@ -211,3 +211,99 @@ exports.propertyRoutes.get("/host/properties", authMiddleware_1.middleware, (req
         res.status(500).json({ msg: "Error fetching host properties" });
     }
 }));
+// edit route yo chai for host ko specific property
+exports.propertyRoutes.put("/:propertyId", upload.array("images"), authMiddleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { propertyId } = req.params;
+    const userId = req.userId;
+    const files = req.files;
+    const { imagesToKeep } = req.body; // Array of existing image URLs to keep
+    if (!userId) {
+        res.status(401).json({ msg: "Unauthorized" });
+        return;
+    }
+    try {
+        // First check if the property exists and belongs to the user
+        const existingProperty = yield prisma_1.prisma.listing.findFirst({
+            where: {
+                id: propertyId,
+                userId: userId
+            }
+        });
+        if (!existingProperty) {
+            res.status(404).json({ msg: "Property not found or unauthorized" });
+            return;
+        }
+        const parseData = types_1.listingSchema.safeParse({
+            title: req.body.title,
+            description: req.body.description,
+            category: req.body.category,
+            roomCount: +req.body.roomCount,
+            bathroomCount: +req.body.bathroomCount,
+            guestCount: +req.body.guestCount,
+            latitude: +req.body.latitude,
+            longitude: +req.body.longitude,
+            price: +req.body.price,
+            propertyName: req.body.propertyName,
+            locationName: req.body.locationName
+        });
+        if (!parseData.success) {
+            res.status(400).json({ msg: "Validation error" });
+            return;
+        }
+        // Handle images to keep
+        let finalImageUrls = imagesToKeep ? JSON.parse(imagesToKeep) : [];
+        // Delete removed images from S3
+        const imagesToDelete = existingProperty.imageSrc.filter(url => !finalImageUrls.includes(url));
+        for (const imageUrl of imagesToDelete) {
+            const key = imageUrl.split('/').pop(); // Get the filename from URL
+            try {
+                yield awsConfig_1.default.deleteObject({
+                    Bucket: process.env.S3_BUCKET_NAME,
+                    Key: `listings/${key}`
+                }).promise();
+            }
+            catch (error) {
+                console.error(`Failed to delete image ${key} from S3:`, error);
+            }
+        }
+        // Upload new images if any
+        if (files && files.length > 0) {
+            const uploadedImageUrls = yield Promise.all(files.map((file) => __awaiter(void 0, void 0, void 0, function* () {
+                const params = {
+                    Bucket: process.env.S3_BUCKET_NAME,
+                    Key: `listings/${(0, uuid_1.v4)()}_${file.originalname}`,
+                    Body: file.buffer,
+                    ContentType: file.mimetype,
+                    ACL: "public-read",
+                };
+                const uploadResult = yield awsConfig_1.default.upload(params).promise();
+                return uploadResult.Location;
+            })));
+            finalImageUrls = [...finalImageUrls, ...uploadedImageUrls];
+        }
+        const updatedProperty = yield prisma_1.prisma.listing.update({
+            where: {
+                id: propertyId
+            },
+            data: {
+                title: parseData.data.title,
+                description: parseData.data.description,
+                imageSrc: finalImageUrls,
+                category: parseData.data.category,
+                roomCount: parseData.data.roomCount,
+                bathroomCount: parseData.data.bathroomCount,
+                guestCount: parseData.data.guestCount,
+                latitude: parseData.data.latitude,
+                longitude: parseData.data.longitude,
+                price: parseData.data.price,
+                locationName: parseData.data.locationName,
+                propertyName: parseData.data.propertyName
+            }
+        });
+        res.status(200).json({ property: updatedProperty });
+    }
+    catch (error) {
+        console.error("Error updating property:", error);
+        res.status(500).json({ msg: "Error updating property" });
+    }
+}));

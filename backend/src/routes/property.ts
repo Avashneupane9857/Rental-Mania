@@ -248,3 +248,126 @@ propertyRoutes.get(
     }
   }
 );
+
+
+
+
+
+
+// edit route yo chai for host ko specific property
+
+
+propertyRoutes.put(
+  "/:propertyId",
+  upload.array("images"),
+  middleware,
+  async (req: Request, res: Response) => {
+    const { propertyId } = req.params;
+    const userId = req.userId;
+    const files = req.files as Express.Multer.File[];
+    const { imagesToKeep } = req.body; // Array of existing image URLs to keep
+    
+    if (!userId) {
+       res.status(401).json({ msg: "Unauthorized" });
+       return
+    }
+
+    try {
+      // First check if the property exists and belongs to the user
+      const existingProperty = await prisma.listing.findFirst({
+        where: {
+          id: propertyId,
+          userId: userId
+        }
+      });
+
+      if (!existingProperty) {
+         res.status(404).json({ msg: "Property not found or unauthorized" });
+         return
+      }
+
+      const parseData = listingSchema.safeParse({
+        title: req.body.title,
+        description: req.body.description,
+        category: req.body.category,
+        roomCount: +req.body.roomCount,
+        bathroomCount: +req.body.bathroomCount,
+        guestCount: +req.body.guestCount,
+        latitude: +req.body.latitude,
+        longitude: +req.body.longitude,
+        price: +req.body.price,
+        propertyName: req.body.propertyName,
+        locationName: req.body.locationName
+      });
+
+      if (!parseData.success) {
+         res.status(400).json({ msg: "Validation error" });
+         return
+      }
+
+      // Handle images to keep
+      let finalImageUrls = imagesToKeep ? JSON.parse(imagesToKeep) : [];
+
+      // Delete removed images from S3
+      const imagesToDelete = existingProperty.imageSrc.filter(
+        url => !finalImageUrls.includes(url)
+      );
+
+      for (const imageUrl of imagesToDelete) {
+        const key = imageUrl.split('/').pop(); // Get the filename from URL
+        try {
+          await s3.deleteObject({
+            Bucket: process.env.S3_BUCKET_NAME!,
+            Key: `listings/${key}`
+          }).promise();
+        } catch (error) {
+          console.error(`Failed to delete image ${key} from S3:`, error);
+        }
+      }
+
+      // Upload new images if any
+      if (files && files.length > 0) {
+        const uploadedImageUrls = await Promise.all(
+          files.map(async (file) => {
+            const params = {
+              Bucket: process.env.S3_BUCKET_NAME!,
+              Key: `listings/${uuidv4()}_${file.originalname}`,
+              Body: file.buffer,
+              ContentType: file.mimetype,
+              ACL: "public-read",
+            };
+
+            const uploadResult = await s3.upload(params).promise();
+            return uploadResult.Location;
+          })
+        );
+        finalImageUrls = [...finalImageUrls, ...uploadedImageUrls];
+      }
+
+      const updatedProperty = await prisma.listing.update({
+        where: {
+          id: propertyId
+        },
+        data: {
+          title: parseData.data.title,
+          description: parseData.data.description,
+          imageSrc: finalImageUrls,
+          category: parseData.data.category,
+          roomCount: parseData.data.roomCount,
+          bathroomCount: parseData.data.bathroomCount,
+          guestCount: parseData.data.guestCount,
+          latitude: parseData.data.latitude,
+          longitude: parseData.data.longitude,
+          price: parseData.data.price,
+          locationName: parseData.data.locationName,
+          propertyName: parseData.data.propertyName
+        }
+      });
+
+      res.status(200).json({ property: updatedProperty });
+    } catch (error) {
+      console.error("Error updating property:", error);
+      res.status(500).json({ msg: "Error updating property" });
+    }
+  }
+);
