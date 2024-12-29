@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import Host from "../components/Host";
 import Map from "../components/Map";
-import PaymentdetailsCard from "../components/PaymentdetailsCard";
+import { PaymentdetailsCard } from "../components/PaymentdetailsCard";
 import PdetailsPic from "../components/PdetailsPic";
 import PdetailsSideBar from "../components/PdetailsSideBar";
 import Reviews from "../components/Reviews";
@@ -40,16 +40,15 @@ function PropertyDetailsSection() {
       <div className="relative top-20 text-[26px]">{data.title}</div>
 
       <PdetailsPic data={data} />
-      <div className="flex w-[100%] gap-28 mx-auto">
-        {" "}
+      <div className="flex flex-col lg:flex-row lg:gap-8 xl:gap-28">
         <PdetailsSideBar data={data} />
         <PaymentdetailsCard data={data} />
       </div>
       <Map data={data} />
-      <div className="h-[1px] relative top-[350px] w-[100%] bg-slate-400 opacity-20"></div>
+      <div className="h-[1px]  relative top-10 w-[100%] bg-slate-400 opacity-20"></div>
       <Reviews />
       <Host data={data} />
-      <div className="relative top-96">
+      <div className="">
         {" "}
         <Footer />
       </div>

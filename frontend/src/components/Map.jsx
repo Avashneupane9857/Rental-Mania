@@ -21,7 +21,7 @@ function Map({ data }) {
   if (loadError) return <div>Error loading maps</div>;
 
   return (
-    <div className="relative top-56 h-[500px] w-full">
+    <div className="relative top-4 h-[500px] w-full">
       <h1 className="text-2xl mb-4">Where you will be</h1>
       {!isLoaded ? (
         <h1>Loading...</h1>

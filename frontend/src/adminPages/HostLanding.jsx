@@ -5,7 +5,7 @@ function HostLanding() {
   return (
     <div className="w-[80%] mx-auto">
       <ANavbar />
-      <div className="relative top-20">
+      <div className="relative top-44">
         {" "}
         <AdminHero />
       </div>

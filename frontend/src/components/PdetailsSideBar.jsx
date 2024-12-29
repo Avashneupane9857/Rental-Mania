@@ -15,9 +15,10 @@ function PdetailsSideBar({ data }) {
     { id: 9, img: cat3, title: "Lock on bedroom door" },
     { id: 10, img: cat6, title: "Dedicated workspace" },
   ];
-  const col1 = Enum.slice(0, 5);
 
+  const col1 = Enum.slice(0, 5);
   const [isExpanded, setIsExpanded] = useState(false);
+
   const text = `${data.description}`;
   const words = text.split(" ");
   const wordLimit = 50;
@@ -25,47 +26,67 @@ function PdetailsSideBar({ data }) {
   const displayText = isExpanded
     ? text
     : words.slice(0, wordLimit).join(" ") + (showBtn ? "..." : " ");
+
   return (
-    <div className="w-[70%] pt-8">
-      <h1 className="text-2xl">{data.propertyName}</h1>
-      <div className="bg-black opacity-10 w-full h-[1px] relative top-4"></div>
-      <div className="flex gap-4 relative top-10">
-        <img src={person} className="rounded-full  w-8 h-8" alt="" />
-        <h1 className=" relative top-1 ">Hosted by</h1>
-        <p className="relative top-1 font-medium">{data.username}</p>
-      </div>
-      <div className="bg-black opacity-10 w-full h-[1px] relative top-16"></div>
-      <div className="relative top-20">
-        <h1 className="font-medium mb-5 text-2xl">About our place</h1>
-        <p className="text-justify text-slate-700">{displayText}</p>
-        {showBtn && (
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className=" underline rounded-xl "
-          >
-            {isExpanded ? "Show less" : "Show more"}
-          </button>
-        )}
-      </div>
+    <div className="w-full lg:w-[70%] px-4 lg:px-0 py-8 space-y-8">
+      {/* Property Name */}
       <div>
-        <div className="bg-black opacity-10 w-full h-[1px] relative top-32"></div>
-        <h1 className="relative top-40 font-medium mb-5 text-2xl">
-          What place offers
-        </h1>
-        {col1.map((datas) => (
-          <div key={datas.id} className="relative top-40 flex gap-5">
-            <div className="mb-6">
-              {" "}
-              <img className="w-8  h-8" src={datas.img} alt="" />
-            </div>
-            <div>
-              {" "}
-              <h1 className="font-thin text-[18px] relative top-1 text-slate-800">
-                {datas.title}
-              </h1>
-            </div>
+        <h1 className="text-xl md:text-2xl font-medium">{data.propertyName}</h1>
+        <div className="w-full h-px bg-black/10 mt-4"></div>
+      </div>
+
+      {/* Host Information */}
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          <img src={person} className="rounded-full w-8 h-8" alt="host" />
+          <span className="text-base md:text-lg">Hosted by</span>
+          <span className="text-base md:text-lg font-medium">
+            {data.username}
+          </span>
+        </div>
+        <div className="w-full h-px bg-black/10"></div>
+      </div>
+
+      {/* About Section */}
+      <div className="space-y-4">
+        <h2 className="text-xl md:text-2xl font-medium">About our place</h2>
+        <div className="space-y-2">
+          <p className="text-justify text-slate-700 text-base md:text-lg">
+            {displayText}
+          </p>
+          {showBtn && (
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="underline text-base md:text-lg hover:text-gray-600 transition-colors"
+            >
+              {isExpanded ? "Show less" : "Show more"}
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Place Offers */}
+      <div className="space-y-6">
+        <div className="w-full h-px bg-black/10"></div>
+        <div className="space-y-6">
+          <h2 className="text-xl md:text-2xl font-medium">What place offers</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {col1.map((item) => (
+              <div key={item.id} className="flex items-center gap-4">
+                <div className="w-8 h-8 flex-shrink-0">
+                  <img
+                    className="w-full h-full object-contain"
+                    src={item.img}
+                    alt={item.title}
+                  />
+                </div>
+                <h3 className="text-base md:text-lg font-thin text-slate-800">
+                  {item.title}
+                </h3>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
     </div>
   );

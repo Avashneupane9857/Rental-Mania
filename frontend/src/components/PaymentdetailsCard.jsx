@@ -1,28 +1,26 @@
 /* eslint-disable react/prop-types */
-function PaymentdetailsCard({ data }) {
+export const PaymentdetailsCard = ({ data }) => {
   return (
-    <div className="w-[30%]  ">
-      <div className="w-[350px] h-[450px] bg-white border-[1px] p-6 top-10 relative shadow-2xl border-slate-200 rounded-2xl">
-        <div className="flex gap-1">
-          {" "}
-          <h1 className="text-xl font-sans font-medium">
-            {" "}
-            &#8377; {data.price}
-          </h1>
-          <p className="text-[17px] top-1 relative">night</p>
+    <div className="w-full lg:w-[30%] px-4 md:px-0">
+      <div className="max-w-sm mx-auto lg:ml-0 mt-8 lg:mt-10 bg-white border border-slate-200 p-6 shadow-2xl rounded-2xl">
+        <div className="flex items-center gap-1">
+          <h1 className="text-xl font-medium">&#8377; {data.price}</h1>
+          <p className="text-lg">night</p>
         </div>
-        <div className="relative top-7 ">
-          <div className="border-[1px] border-slate-500 rounded-t-lg w-72 h-14">
-            <div className="bg-black "></div>
+
+        <div className="mt-6">
+          <div className="border border-slate-500 rounded-t-lg p-4 h-14">
+            {/* Check-in date picker */}
           </div>
-          <div className="border-r border-b border-l rounded-b-lg border-slate-500  w-72 h-14"></div>
+          <div className="border-r border-b border-l border-slate-500 rounded-b-lg p-4 h-14">
+            {/* Check-out date picker */}
+          </div>
         </div>
-        <button className="text-center text-white w-72  h-10 rounded-lg bg-[#ff5A5F] hover:bg-[#ff464c] relative top-20">
+
+        <button className="w-full h-10 mt-8 text-white rounded-lg bg-[#ff5A5F] hover:bg-[#ff464c] transition-colors">
           Reserve
         </button>
       </div>
     </div>
   );
-}
-
-export default PaymentdetailsCard;
+};

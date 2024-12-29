@@ -3,7 +3,7 @@ import { person } from "../assets";
 
 function Host({ data }) {
   return (
-    <div className="top-[450px]  relative">
+    <div className="  relative">
       <h1 className="text-2xl">Meet your Host</h1>
 
       <div className="flex justify-center">
