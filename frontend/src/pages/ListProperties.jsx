@@ -53,10 +53,11 @@ const ListProperties = () => {
     try {
       const response = await axios.post(
         `${backendUrl}/property/list`,
-        formData,
+        formDataToSend,
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
           },
         }
       );
