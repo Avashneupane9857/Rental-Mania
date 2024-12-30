@@ -88,6 +88,10 @@ function LoginPage() {
             Submit
           </button>
         </form>
+        <a href="/signup">
+          Dont have an account ?
+          <button className="text-red-600">Create an account</button>
+        </a>
       </div>
     </div>
   );

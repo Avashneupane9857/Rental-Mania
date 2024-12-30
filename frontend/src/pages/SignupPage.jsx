@@ -16,7 +16,6 @@ function SignupPage() {
     e.preventDefault();
     const hitEndPoint = async () => {
       try {
-        console.log(backendUrl);
         const response = await axios.post(`${backendUrl}/auth/signup`, {
           email,
           password,
@@ -26,7 +25,7 @@ function SignupPage() {
           profession,
         });
         if (response.status === 200) {
-          navigate("/");
+          navigate("/login");
         } else {
           alert("Fill details correctly");
         }
