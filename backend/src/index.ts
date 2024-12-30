@@ -3,7 +3,7 @@ import { authroutes } from "./routes/auth"
 import { propertyRoutes } from "./routes/property"
 import * as dotenv from 'dotenv';
 import cors from "cors";
-import { reservationsRoutes } from "./routes/reservationsRoutes";
+import { reservationRoutes } from "./routes/reservationsRoutes";
 dotenv.config();
 const corsOptions = {
     origin: ["http://localhost:5173","http://localhost:5174", "https://your-frontend-domain.com"],
@@ -27,7 +27,7 @@ app.get("/",(req,res)=>{
 
 app.use("/auth",authroutes)
 app.use("/property",propertyRoutes)
-app.use("/reservations",reservationsRoutes)
+app.use("/reservations",reservationRoutes)
 
 app.listen(port,()=>{
     console.log(`server running in ${port}`)
