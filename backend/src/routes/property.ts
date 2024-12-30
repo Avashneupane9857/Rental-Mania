@@ -6,8 +6,6 @@ import { v4 as uuidv4 } from "uuid";
 import multer from "multer";
 import s3 from "../awsConfig";
 import { error, log } from "console";
-// upload images that will be saved to S3 bucket and in frontend fetch from there
-
 export const propertyRoutes = Router();
 const upload = multer({ storage: multer.memoryStorage() });
 propertyRoutes.post(
@@ -265,7 +263,7 @@ propertyRoutes.put(
     const { propertyId } = req.params;
     const userId = req.userId;
     const files = req.files as Express.Multer.File[];
-    const { imagesToKeep } = req.body; // Array of existing image URLs to keep
+    const { imagesToKeep } = req.body; 
     
     if (!userId) {
        res.status(401).json({ msg: "Unauthorized" });
@@ -273,7 +271,7 @@ propertyRoutes.put(
     }
 
     try {
-      // First check if the property exists and belongs to the user
+    
       const existingProperty = await prisma.listing.findFirst({
         where: {
           id: propertyId,
@@ -305,16 +303,16 @@ propertyRoutes.put(
          return
       }
 
-      // Handle images to keep
+    
       let finalImageUrls = imagesToKeep ? JSON.parse(imagesToKeep) : [];
 
-      // Delete removed images from S3
+     
       const imagesToDelete = existingProperty.imageSrc.filter(
         url => !finalImageUrls.includes(url)
       );
 
       for (const imageUrl of imagesToDelete) {
-        const key = imageUrl.split('/').pop(); // Get the filename from URL
+        const key = imageUrl.split('/').pop(); 
         try {
           await s3.deleteObject({
             Bucket: process.env.S3_BUCKET_NAME!,
@@ -325,7 +323,6 @@ propertyRoutes.put(
         }
       }
 
-      // Upload new images if any
       if (files && files.length > 0) {
         const uploadedImageUrls = await Promise.all(
           files.map(async (file) => {
