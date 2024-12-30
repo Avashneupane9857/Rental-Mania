@@ -88,3 +88,149 @@ reservationRoutes.post("/create",middleware,async(req:Request,res:Response)=>{
     }
   }
 )
+
+
+
+
+
+
+
+reservationRoutes.get(
+    "/user",
+    middleware,
+    async (req: Request, res: Response) => {
+      const userId = req.userId;
+  
+      if (!userId) {
+         res.status(401).json({ msg: "Unauthorized" });
+         return
+      }
+  
+      try {
+        const reservations = await prisma.reservation.findMany({
+          where: { userId },
+          include: {
+            listing: true
+          }
+        });
+  
+         res.status(200).json({ reservations });
+         return
+      } catch (error) {
+        console.error("Error fetching user reservations:", error);
+         res.status(500).json({ msg: "Error fetching reservations" });
+         return
+      }
+    }
+  );
+
+
+
+
+
+
+  // Get all reservations for a host's properties guest ko booking manage garna lai use garney yo route chai 
+
+
+  reservationRoutes.get(
+    "/host",
+    middleware,
+    async (req: Request, res: Response) => {
+      const userId = req.userId;
+  
+      if (!userId) {
+         res.status(401).json({ msg: "Unauthorized" });
+         return
+      }
+  
+      try {
+        const reservations = await prisma.reservation.findMany({
+          where: {
+            listing: {
+              userId: userId
+            }
+          },
+          include: {
+            listing: true,
+            user: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+                image: true
+              }
+            }
+          }
+        });
+  
+         res.status(200).json({ reservations });
+         return
+      } catch (error) {
+        console.error("Error fetching host reservations:", error);
+         res.status(500).json({ msg: "Error fetching reservations" });
+         return
+      }
+    }
+  );
+  
+
+
+
+
+
+
+
+//Retrieves detailed information about a specific reservation
+  reservationRoutes.get(
+    "/:reservationId",
+    middleware,
+    async (req: Request, res: Response) => {
+      const userId = req.userId;
+      const { reservationId } = req.params;
+  
+      if (!userId) {
+         res.status(401).json({ msg: "Unauthorized" });
+         return
+      }
+  
+      try {
+        const reservation = await prisma.reservation.findUnique({
+          where: { id: reservationId },
+          include: {
+            listing: true,
+            user: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+                image: true
+              }
+            }
+          }
+        });
+  
+        if (!reservation) {
+           res.status(404).json({ msg: "Reservation not found" });
+           return
+        }
+  
+        // Check if the user is either the guest or the host
+        if (reservation.userId !== userId && reservation.listing.userId !== userId) {
+           res.status(403).json({ msg: "Not authorized to view this reservation" });
+           return
+        }
+  
+         res.status(200).json({ reservation });
+         return
+      } catch (error) {
+        console.error("Error fetching reservation:", error);
+         res.status(500).json({ msg: "Error fetching reservation" });
+         return
+      }
+    }
+  );
+
+
+  
