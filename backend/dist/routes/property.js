@@ -20,7 +20,6 @@ const prisma_1 = require("../db/prisma");
 const uuid_1 = require("uuid");
 const multer_1 = __importDefault(require("multer"));
 const awsConfig_1 = __importDefault(require("../awsConfig"));
-// upload images that will be saved to S3 bucket and in frontend fetch from there
 exports.propertyRoutes = (0, express_1.Router)();
 const upload = (0, multer_1.default)({ storage: multer_1.default.memoryStorage() });
 exports.propertyRoutes.post("/list", upload.array("images"), authMiddleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -216,13 +215,12 @@ exports.propertyRoutes.put("/:propertyId", upload.array("images"), authMiddlewar
     const { propertyId } = req.params;
     const userId = req.userId;
     const files = req.files;
-    const { imagesToKeep } = req.body; // Array of existing image URLs to keep
+    const { imagesToKeep } = req.body;
     if (!userId) {
         res.status(401).json({ msg: "Unauthorized" });
         return;
     }
     try {
-        // First check if the property exists and belongs to the user
         const existingProperty = yield prisma_1.prisma.listing.findFirst({
             where: {
                 id: propertyId,
@@ -250,12 +248,10 @@ exports.propertyRoutes.put("/:propertyId", upload.array("images"), authMiddlewar
             res.status(400).json({ msg: "Validation error" });
             return;
         }
-        // Handle images to keep
         let finalImageUrls = imagesToKeep ? JSON.parse(imagesToKeep) : [];
-        // Delete removed images from S3
         const imagesToDelete = existingProperty.imageSrc.filter(url => !finalImageUrls.includes(url));
         for (const imageUrl of imagesToDelete) {
-            const key = imageUrl.split('/').pop(); // Get the filename from URL
+            const key = imageUrl.split('/').pop();
             try {
                 yield awsConfig_1.default.deleteObject({
                     Bucket: process.env.S3_BUCKET_NAME,
@@ -266,7 +262,6 @@ exports.propertyRoutes.put("/:propertyId", upload.array("images"), authMiddlewar
                 console.error(`Failed to delete image ${key} from S3:`, error);
             }
         }
-        // Upload new images if any
         if (files && files.length > 0) {
             const uploadedImageUrls = yield Promise.all(files.map((file) => __awaiter(void 0, void 0, void 0, function* () {
                 const params = {

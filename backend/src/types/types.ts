@@ -46,3 +46,11 @@ export const listingSchema = z.object({
     
   });
 
+
+  export const reservationSchema = z.object({
+    startDate: z.string().transform((str) => new Date(str)),
+    endDate: z.string().transform((str) => new Date(str)),
+    totalPrice: z.number(),
+    listingId: z.string(),
+    guestCount: z.number()
+  });
