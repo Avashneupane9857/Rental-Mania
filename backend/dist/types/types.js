@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.listingSchema = exports.LoginSchema = exports.SignupSchema = void 0;
+exports.reservationSchema = exports.listingSchema = exports.LoginSchema = exports.SignupSchema = void 0;
 const zod_1 = require("zod");
 exports.SignupSchema = zod_1.z.object({
     email: zod_1.z.string().email(),
@@ -41,4 +41,11 @@ exports.listingSchema = zod_1.z.object({
     longitude: zod_1.z.number(),
     locationName: zod_1.z.string(),
     propertyName: zod_1.z.string()
+});
+exports.reservationSchema = zod_1.z.object({
+    startDate: zod_1.z.string().transform((str) => new Date(str)),
+    endDate: zod_1.z.string().transform((str) => new Date(str)),
+    totalPrice: zod_1.z.number(),
+    listingId: zod_1.z.string(),
+    guestCount: zod_1.z.number()
 });

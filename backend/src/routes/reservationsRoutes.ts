@@ -233,4 +233,46 @@ reservationRoutes.get(
   );
 
 
+
+  reservationRoutes.delete(
+    "/:reservationId",
+    middleware,
+    async (req: Request, res: Response) => {
+      const userId = req.userId;
+      const { reservationId } = req.params;
   
+      if (!userId) {
+         res.status(401).json({ msg: "Unauthorized" });
+         return
+      }
+  
+      try {
+        const reservation = await prisma.reservation.findUnique({
+          where: { id: reservationId },
+          include: { listing: true }
+        });
+  
+        if (!reservation) {
+           res.status(404).json({ msg: "Reservation not found" });
+           return
+        }
+  
+        // Check if the user is either the guest or the host
+        if (reservation.userId !== userId && reservation.listing.userId !== userId) {
+           res.status(403).json({ msg: "Not authorized to cancel this reservation" });
+           return
+        }
+  
+        await prisma.reservation.delete({
+          where: { id: reservationId }
+        });
+  
+         res.status(200).json({ msg: "Reservation cancelled successfully" });
+         return
+      } catch (error) {
+        console.error("Error cancelling reservation:", error);
+         res.status(500).json({ msg: "Error cancelling reservation" });
+         return
+      }
+    }
+  );
