@@ -232,7 +232,8 @@ reservationRoutes.get(
     }
   );
 
-
+// aaila ko lai both host and user can cancel reservation ani btw i think thats the best apporach cause same route can be used to do cancellation tas
+// from any type of user cause in frontend declining the reservation by host is same thing like cancellation okay i think thats the best apporach 
 
   reservationRoutes.delete(
     "/:reservationId",
