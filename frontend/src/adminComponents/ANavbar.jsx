@@ -36,13 +36,18 @@ function ANavbar() {
     setIsMenuOpen(false);
     setIsProfileMenuOpen(false);
   };
-
+  const handleLogoClick = () => {
+    navigate("/hosting");
+  };
   return (
     <div className="fixed top-0 left-0 right-0 bg-white z-50 px-4 md:px-6 lg:px-8 py-4 shadow-sm">
       <div className="max-w-7xl mx-auto">
         <header className="flex justify-between items-center">
           {/* Logo */}
-          <div className="flex-shrink-0">
+          <div
+            onClick={handleLogoClick}
+            className="flex-shrink-0 cursor-pointer "
+          >
             <img
               className="w-[100px] h-8 object-contain"
               src={logo}
@@ -52,9 +57,6 @@ function ANavbar() {
 
           {/* Desktop Menu Items */}
           <div className="hidden md:flex items-center space-x-6">
-            <button onClick={handlehostListing} className="hover:underline">
-              Today
-            </button>
             <button onClick={handlehostListing} className="hover:underline">
               Listing
             </button>

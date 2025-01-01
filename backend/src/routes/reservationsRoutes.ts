@@ -93,7 +93,8 @@ reservationRoutes.post("/create",middleware,async(req:Request,res:Response)=>{
 
 
 
-
+// yo ta user side ko mah tesko specifi reservation dekauna lai ho 
+//yeti ho ki mailey yesma filter i mean query hanu parcha if all ho vaney no need to send any params or else send current and upcoming and filter from background and give response 
 
 reservationRoutes.get(
     "/user",
@@ -277,3 +278,77 @@ reservationRoutes.get(
       }
     }
   );
+
+
+
+
+///////////////////////////////////////********************** */
+
+
+
+  // status anusar ko lagi use garney route 
+
+
+// // Add query parameter support to the /host route
+// reservationRoutes.get(
+//   "/host",
+//   middleware,
+//   async (req: Request, res: Response) => {
+//     const userId = req.userId;
+//     const { status } = req.query; // Add status query parameter
+    
+//     if (!userId) {
+//       res.status(401).json({ msg: "Unauthorized" });
+//       return;
+//     }
+
+//     try {
+//       const currentDate = new Date();
+      
+//       // Base query conditions
+//       let whereConditions: any = {
+//         listing: {
+//           userId: userId
+//         }
+//       };
+
+//       // Add date filtering based on status
+//       if (status === 'current') {
+//         whereConditions.AND = [
+//           { startDate: { lte: currentDate } },
+//           { endDate: { gte: currentDate } }
+//         ];
+//       } else if (status === 'upcoming') {
+//         whereConditions.startDate = { gt: currentDate };
+//       } else if (status === 'past') {
+//         whereConditions.endDate = { lt: currentDate };
+//       }
+
+//       const reservations = await prisma.reservation.findMany({
+//         where: whereConditions,
+//         include: {
+//           listing: true,
+//           user: {
+//             select: {
+//               id: true,
+//               firstName: true,
+//               lastName: true,
+//               email: true,
+//               image: true
+//             }
+//           }
+//         },
+//         orderBy: {
+//           startDate: 'asc'
+//         }
+//       });
+
+//       res.status(200).json({ reservations });
+//       return;
+//     } catch (error) {
+//       console.error("Error fetching host reservations:", error);
+//       res.status(500).json({ msg: "Error fetching reservations" });
+//       return;
+//     }
+//   }
+// );
