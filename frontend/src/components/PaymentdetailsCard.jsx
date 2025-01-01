@@ -160,7 +160,7 @@ export const PaymentDetailsCard = ({ data, propertyId }) => {
           guestCount,
         }),
       });
-
+      console.log(response.status);
       if (!response.ok) {
         throw new Error(await response.text());
       }
