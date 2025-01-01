@@ -94,12 +94,15 @@ propertyRoutes.post(
   }
 );
 propertyRoutes.get(
-  "/filter",
+  "/filter/",
   middleware,
   async (req: Request, res: Response) => {
     try {
       const { title, category, price, location } = req.query;
       const query: any = {};
+
+  
+
 
       if (title && typeof title === "string" && title.trim() !== "") {
         query.title = title.trim();
