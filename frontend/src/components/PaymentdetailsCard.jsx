@@ -133,6 +133,8 @@ export const PaymentDetailsCard = ({ data, propertyId }) => {
     });
   };
 
+  const [showSuccess, setShowSuccess] = useState(false);
+
   const handleReservation = async () => {
     if (!startDate || !endDate) {
       setError("Please select dates");
@@ -141,7 +143,6 @@ export const PaymentDetailsCard = ({ data, propertyId }) => {
 
     setIsLoading(true);
     setError("");
-
     try {
       const nights = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
       const totalPrice = nights * data.price;
@@ -164,6 +165,10 @@ export const PaymentDetailsCard = ({ data, propertyId }) => {
       if (!response.ok) {
         throw new Error(await response.text());
       }
+      setShowSuccess(true);
+      setStartDate(null);
+      setEndDate(null);
+      setGuestCount(1);
     } catch (err) {
       setError(err.message || "Failed to create reservation");
     } finally {
@@ -272,6 +277,26 @@ export const PaymentDetailsCard = ({ data, propertyId }) => {
               {Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) *
                 data.price}
             </p>
+          </div>
+        )}
+
+        {showSuccess && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white p-8 rounded-2xl max-w-sm w-full mx-4">
+              <h3 className="text-2xl font-semibold mb-4">
+                Booking Confirmed!
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Thanks for your reservation. We are looking forward to hosting
+                you!
+              </p>
+              <button
+                onClick={() => setShowSuccess(false)}
+                className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800"
+              >
+                OK
+              </button>
+            </div>
           </div>
         )}
       </div>
