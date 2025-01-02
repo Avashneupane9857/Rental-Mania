@@ -7,6 +7,7 @@ import HostLanding from "../adminPages/HostLanding";
 import HostListing from "../adminPages/HostListing";
 import ListProperties from "../adminPages/ListProperties";
 import EditProperty from "../pages/EditProperty";
+import Reservations from "../pages/Reservations";
 
 function Routing() {
   return (
@@ -26,6 +27,7 @@ function Routing() {
           path="/hosting/property/edit/:propertyId"
           element={<EditProperty />}
         />
+        <Route path="reservations" element={<Reservations />} />
       </Routes>
     </div>
   );
