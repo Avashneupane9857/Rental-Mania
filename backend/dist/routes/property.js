@@ -92,7 +92,7 @@ exports.propertyRoutes.post("/list", upload.array("images"), authMiddleware_1.mi
         res.status(400).json({ msg: "Error in property listing" });
     }
 }));
-exports.propertyRoutes.get("/filter", authMiddleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.propertyRoutes.get("/filter/", authMiddleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { title, category, price, location } = req.query;
         const query = {};

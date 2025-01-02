@@ -84,6 +84,8 @@ exports.reservationRoutes.post("/create", authMiddleware_1.middleware, (req, res
         return;
     }
 }));
+// yo ta user side ko mah tesko specifi reservation dekauna lai ho 
+//yeti ho ki mailey yesma filter i mean query hanu parcha if all ho vaney no need to send any params or else send current and upcoming and filter from background and give response 
 exports.reservationRoutes.get("/user", authMiddleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.userId;
     if (!userId) {
@@ -107,41 +109,44 @@ exports.reservationRoutes.get("/user", authMiddleware_1.middleware, (req, res) =
     }
 }));
 // Get all reservations for a host's properties guest ko booking manage garna lai use garney yo route chai 
-exports.reservationRoutes.get("/host", authMiddleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = req.userId;
-    if (!userId) {
-        res.status(401).json({ msg: "Unauthorized" });
-        return;
-    }
-    try {
-        const reservations = yield prisma_1.prisma.reservation.findMany({
-            where: {
-                listing: {
-                    userId: userId
-                }
-            },
-            include: {
-                listing: true,
-                user: {
-                    select: {
-                        id: true,
-                        firstName: true,
-                        lastName: true,
-                        email: true,
-                        image: true
-                    }
-                }
-            }
-        });
-        res.status(200).json({ reservations });
-        return;
-    }
-    catch (error) {
-        console.error("Error fetching host reservations:", error);
-        res.status(500).json({ msg: "Error fetching reservations" });
-        return;
-    }
-}));
+// reservationRoutes.get(
+//   "/host",
+//   middleware,
+//   async (req: Request, res: Response) => {
+//     const userId = req.userId;
+//     if (!userId) {
+//        res.status(401).json({ msg: "Unauthorized" });
+//        return
+//     }
+//     try {
+//       const reservations = await prisma.reservation.findMany({
+//         where: {
+//           listing: {
+//             userId: userId
+//           }
+//         },
+//         include: {
+//           listing: true,
+//           user: {
+//             select: {
+//               id: true,
+//               firstName: true,
+//               lastName: true,
+//               email: true,
+//               image: true
+//             }
+//           }
+//         }
+//       });
+//        res.status(200).json({ reservations });
+//        return
+//     } catch (error) {
+//       console.error("Error fetching host reservations:", error);
+//        res.status(500).json({ msg: "Error fetching reservations" });
+//        return
+//     }
+//   }
+// );
 //Retrieves detailed information about a specific reservation
 exports.reservationRoutes.get("/:reservationId", authMiddleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.userId;
@@ -216,6 +221,52 @@ exports.reservationRoutes.delete("/:reservationId", authMiddleware_1.middleware,
     catch (error) {
         console.error("Error cancelling reservation:", error);
         res.status(500).json({ msg: "Error cancelling reservation" });
+        return;
+    }
+}));
+///////////////////////////**************** */
+// Helper function to get filtered reservations
+const getHostReservations = (userId, filter) => __awaiter(void 0, void 0, void 0, function* () {
+    const now = new Date();
+    const whereClause = Object.assign(Object.assign({ listing: {
+            userId: userId
+        } }, (filter === 'current' && {
+        startDate: { lte: now },
+        endDate: { gte: now }
+    })), (filter === 'upcoming' && {
+        startDate: { gt: now }
+    }));
+    return prisma_1.prisma.reservation.findMany({
+        where: whereClause,
+        include: {
+            listing: true,
+            user: {
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    image: true
+                }
+            }
+        }
+    });
+});
+exports.reservationRoutes.get("/host", authMiddleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.userId;
+    const filter = req.query.filter;
+    if (!userId) {
+        res.status(401).json({ msg: "Unauthorized" });
+        return;
+    }
+    try {
+        const reservations = yield getHostReservations(userId, filter);
+        res.status(200).json({ reservations });
+        return;
+    }
+    catch (error) {
+        console.error("Error fetching host reservations:", error);
+        res.status(500).json({ msg: "Error fetching reservations" });
         return;
     }
 }));
