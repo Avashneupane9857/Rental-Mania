@@ -77,8 +77,11 @@ model Reservation {
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  listingId String
-  listing   Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  listingId     String
+  listing       Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  paymentId     String?
+  orderId       String?
+  paymentStatus String  @default("pending")
 
   @@index([userId])
   @@index([listingId])
