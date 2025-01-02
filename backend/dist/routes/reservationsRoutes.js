@@ -15,6 +15,51 @@ const authMiddleware_1 = require("../middleware.ts/authMiddleware");
 const prisma_1 = require("../db/prisma");
 const types_1 = require("../types/types");
 exports.reservationRoutes = (0, express_1.Router)();
+// Helper function to get filtered reservations
+const getHostReservations = (userId, filter) => __awaiter(void 0, void 0, void 0, function* () {
+    const now = new Date();
+    const whereClause = Object.assign(Object.assign({ listing: {
+            userId: userId
+        } }, (filter === 'current' && {
+        startDate: { lte: now },
+        endDate: { gte: now }
+    })), (filter === 'upcoming' && {
+        startDate: { gt: now }
+    }));
+    return prisma_1.prisma.reservation.findMany({
+        where: whereClause,
+        include: {
+            listing: true,
+            user: {
+                select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    image: true
+                }
+            }
+        }
+    });
+});
+exports.reservationRoutes.get("/host", authMiddleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.userId;
+    const filter = req.query.filter;
+    if (!userId) {
+        res.status(401).json({ msg: "Unauthorized" });
+        return;
+    }
+    try {
+        const reservations = yield getHostReservations(userId, filter);
+        res.status(200).json({ reservations });
+        return;
+    }
+    catch (error) {
+        console.error("Error fetching host reservations:", error);
+        res.status(500).json({ msg: "Error fetching reservations" });
+        return;
+    }
+}));
 exports.reservationRoutes.post("/create", authMiddleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.userId;
     if (!userId) {
@@ -225,48 +270,3 @@ exports.reservationRoutes.delete("/:reservationId", authMiddleware_1.middleware,
     }
 }));
 ///////////////////////////**************** */
-// Helper function to get filtered reservations
-const getHostReservations = (userId, filter) => __awaiter(void 0, void 0, void 0, function* () {
-    const now = new Date();
-    const whereClause = Object.assign(Object.assign({ listing: {
-            userId: userId
-        } }, (filter === 'current' && {
-        startDate: { lte: now },
-        endDate: { gte: now }
-    })), (filter === 'upcoming' && {
-        startDate: { gt: now }
-    }));
-    return prisma_1.prisma.reservation.findMany({
-        where: whereClause,
-        include: {
-            listing: true,
-            user: {
-                select: {
-                    id: true,
-                    firstName: true,
-                    lastName: true,
-                    email: true,
-                    image: true
-                }
-            }
-        }
-    });
-});
-exports.reservationRoutes.get("/host", authMiddleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = req.userId;
-    const filter = req.query.filter;
-    if (!userId) {
-        res.status(401).json({ msg: "Unauthorized" });
-        return;
-    }
-    try {
-        const reservations = yield getHostReservations(userId, filter);
-        res.status(200).json({ reservations });
-        return;
-    }
-    catch (error) {
-        console.error("Error fetching host reservations:", error);
-        res.status(500).json({ msg: "Error fetching reservations" });
-        return;
-    }
-}));
