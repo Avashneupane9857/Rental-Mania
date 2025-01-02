@@ -2,10 +2,15 @@ import { Request, Response, Router } from "express";
 import { middleware } from "../middleware.ts/authMiddleware";
 import { prisma } from "../db/prisma";
 import { reservationSchema } from "../types/types";
-
+import Razorpay from 'razorpay';
+import crypto from 'crypto';
 export const reservationRoutes=Router()
-
-
+import dotenv from "dotenv"
+dotenv.config()
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID!,
+  key_secret: process.env.RAZORPAY_KEY_SECRET!
+});
 
 // Helper function to get filtered reservations
 const getHostReservations = async (userId: string, filter?: 'current' | 'upcoming') => {
@@ -64,6 +69,78 @@ reservationRoutes.get(
     }
   }
 );
+
+
+//payment ko kura aaba 
+
+
+interface RazorpayOptions {
+  amount: number;
+  currency: string;
+  receipt: string;
+  payment_capture?: 0 | 1;
+}
+
+interface RazorpayOrder {
+  id: string;
+  entity: string;
+  amount: number;
+  amount_paid: number;
+  amount_due: number;
+  currency: string;
+  receipt: string;
+  status: string;
+  attempts: number;
+  created_at: number;
+}
+
+reservationRoutes.post("/create-payment", middleware, async (req: Request, res: Response) => {
+  const userId = req.userId;
+  
+  if (!userId) {
+     res.status(401).json({ msg: "Unauthorized" });
+     return
+  }
+
+  try {
+    const parseData = reservationSchema.safeParse(req.body);
+    
+    if (!parseData.success) {
+       res.status(400).json({ msg: "Invalid reservation data" });
+       return
+    }
+
+    const { totalPrice, listingId } = parseData.data;
+
+  
+    const orderOptions: RazorpayOptions = {
+      amount: Math.round(totalPrice * 100), // Convert to paise
+      currency: 'INR',
+      receipt: `booking_${Date.now()}_${userId}`,
+      payment_capture: 1
+    };
+
+
+    const order = await razorpay.orders.create(orderOptions) as unknown as RazorpayOrder;
+
+     res.status(200).json({
+      orderId: order.id,
+      amount: order.amount,
+      currency: order.currency,
+      keyId: process.env.RAZORPAY_KEY_ID
+    });
+    return
+
+  } catch (error) {
+    console.error("Payment initiation error:", error);
+     res.status(500).json({ msg: "Error creating payment" });
+     return
+  }
+});
+
+
+//yesma mah payment verification garey pachi ballaa added the reservation 
+
 reservationRoutes.post("/create",middleware,async(req:Request,res:Response)=>{
     const userId = req.userId;
     
@@ -80,8 +157,26 @@ reservationRoutes.post("/create",middleware,async(req:Request,res:Response)=>{
          return
       }
 
-      const { startDate, endDate, totalPrice, listingId, guestCount } = parseData.data;
+      const { 
+        startDate, 
+        endDate, 
+        totalPrice, 
+        listingId, 
+        guestCount,
+        razorpay_payment_id,
+        razorpay_order_id,
+        razorpay_signature 
+      } = parseData.data;
 
+      const generated_signature = crypto
+      .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET!)
+      .update(razorpay_order_id + '|' + razorpay_payment_id)
+      .digest('hex');
+
+    if (generated_signature !== razorpay_signature) {
+       res.status(400).json({ msg: "Invalid payment signature" });
+       return
+    }
       // Check if the listing exists
       const listing = await prisma.listing.findUnique({
         where: { id: listingId }
@@ -132,9 +227,13 @@ reservationRoutes.post("/create",middleware,async(req:Request,res:Response)=>{
           endDate,
           totalPrice,
           userId,
-          listingId
+          listingId,
+          paymentId: razorpay_payment_id,
+          orderId: razorpay_order_id,
+          paymentStatus: 'completed'
         }
       });
+  
 
        res.status(200).json({ reservation });
        

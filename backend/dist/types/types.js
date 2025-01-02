@@ -47,5 +47,8 @@ exports.reservationSchema = zod_1.z.object({
     endDate: zod_1.z.string().transform((str) => new Date(str)),
     totalPrice: zod_1.z.number(),
     listingId: zod_1.z.string(),
-    guestCount: zod_1.z.number()
+    guestCount: zod_1.z.number(),
+    razorpay_payment_id: zod_1.z.string().optional(),
+    razorpay_order_id: zod_1.z.string().optional(),
+    razorpay_signature: zod_1.z.string().optional(),
 });

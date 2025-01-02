@@ -8,13 +8,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.reservationRoutes = void 0;
 const express_1 = require("express");
 const authMiddleware_1 = require("../middleware.ts/authMiddleware");
 const prisma_1 = require("../db/prisma");
 const types_1 = require("../types/types");
+const razorpay_1 = __importDefault(require("razorpay"));
+const crypto_1 = __importDefault(require("crypto"));
 exports.reservationRoutes = (0, express_1.Router)();
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
+const razorpay = new razorpay_1.default({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET
+});
 // Helper function to get filtered reservations
 const getHostReservations = (userId, filter) => __awaiter(void 0, void 0, void 0, function* () {
     const now = new Date();
@@ -60,6 +71,41 @@ exports.reservationRoutes.get("/host", authMiddleware_1.middleware, (req, res) =
         return;
     }
 }));
+exports.reservationRoutes.post("/create-payment", authMiddleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.userId;
+    if (!userId) {
+        res.status(401).json({ msg: "Unauthorized" });
+        return;
+    }
+    try {
+        const parseData = types_1.reservationSchema.safeParse(req.body);
+        if (!parseData.success) {
+            res.status(400).json({ msg: "Invalid reservation data" });
+            return;
+        }
+        const { totalPrice, listingId } = parseData.data;
+        const orderOptions = {
+            amount: Math.round(totalPrice * 100), // Convert to paise
+            currency: 'INR',
+            receipt: `booking_${Date.now()}_${userId}`,
+            payment_capture: 1
+        };
+        const order = yield razorpay.orders.create(orderOptions);
+        res.status(200).json({
+            orderId: order.id,
+            amount: order.amount,
+            currency: order.currency,
+            keyId: process.env.RAZORPAY_KEY_ID
+        });
+        return;
+    }
+    catch (error) {
+        console.error("Payment initiation error:", error);
+        res.status(500).json({ msg: "Error creating payment" });
+        return;
+    }
+}));
+//yesma mah payment verification garey pachi ballaa added the reservation 
 exports.reservationRoutes.post("/create", authMiddleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.userId;
     if (!userId) {
@@ -72,7 +118,15 @@ exports.reservationRoutes.post("/create", authMiddleware_1.middleware, (req, res
             res.status(400).json({ msg: "Invalid reservation data" });
             return;
         }
-        const { startDate, endDate, totalPrice, listingId, guestCount } = parseData.data;
+        const { startDate, endDate, totalPrice, listingId, guestCount, razorpay_payment_id, razorpay_order_id, razorpay_signature } = parseData.data;
+        const generated_signature = crypto_1.default
+            .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
+            .update(razorpay_order_id + '|' + razorpay_payment_id)
+            .digest('hex');
+        if (generated_signature !== razorpay_signature) {
+            res.status(400).json({ msg: "Invalid payment signature" });
+            return;
+        }
         // Check if the listing exists
         const listing = yield prisma_1.prisma.listing.findUnique({
             where: { id: listingId }
@@ -118,7 +172,10 @@ exports.reservationRoutes.post("/create", authMiddleware_1.middleware, (req, res
                 endDate,
                 totalPrice,
                 userId,
-                listingId
+                listingId,
+                paymentId: razorpay_payment_id,
+                orderId: razorpay_order_id,
+                paymentStatus: 'completed'
             }
         });
         res.status(200).json({ reservation });

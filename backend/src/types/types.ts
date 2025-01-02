@@ -52,5 +52,8 @@ export const listingSchema = z.object({
     endDate: z.string().transform((str) => new Date(str)),
     totalPrice: z.number(),
     listingId: z.string(),
-    guestCount: z.number()
+    guestCount: z.number(),
+    razorpay_payment_id: z.string().optional(),
+  razorpay_order_id: z.string().optional(),
+  razorpay_signature: z.string().optional(),
   });
