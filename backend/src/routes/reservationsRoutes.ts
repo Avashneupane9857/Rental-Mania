@@ -177,6 +177,7 @@ reservationRoutes.post("/create",middleware,async(req:Request,res:Response)=>{
        res.status(400).json({ msg: "Invalid payment signature" });
        return
     }
+    
       // Check if the listing exists
       const listing = await prisma.listing.findUnique({
         where: { id: listingId }
