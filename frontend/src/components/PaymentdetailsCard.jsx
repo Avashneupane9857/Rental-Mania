@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { backendUrl } from "../../config";
 
 const generateCalendarDays = (year, month) => {
@@ -115,6 +115,15 @@ const DatePicker = ({ selectedDate, onDateSelect, minDate }) => {
   );
 };
 
+const formatDate = (date) => {
+  if (!date) return "";
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+};
+
 export const PaymentDetailsCard = ({ data, propertyId }) => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -123,17 +132,122 @@ export const PaymentDetailsCard = ({ data, propertyId }) => {
   const [showEndPicker, setShowEndPicker] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
-  const formatDate = (date) => {
-    if (!date) return "";
-    return date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
-  };
-
   const [showSuccess, setShowSuccess] = useState(false);
+
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  const handlePayment = async (totalPrice) => {
+    const token = localStorage.getItem("authToken");
+
+    if (!token) {
+      setError("Please login to make a reservation");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const response = await fetch(
+        `${backendUrl}/reservations/create-payment`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            totalPrice,
+            listingId: propertyId,
+            startDate,
+            endDate,
+            guestCount,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || data.msg || "Payment initialization failed"
+        );
+      }
+
+      const { orderId, amount, currency, keyId } = data;
+
+      const options = {
+        key: keyId,
+        amount,
+        currency,
+        name: "Airbnb Clone",
+        description: `Booking for ${data.title || "Property"}`,
+        order_id: orderId,
+        handler: async (response) => {
+          try {
+            const reservationResponse = await fetch(
+              `${backendUrl}/reservations/create`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  startDate,
+                  endDate,
+                  totalPrice,
+                  listingId: propertyId,
+                  guestCount,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_signature: response.razorpay_signature,
+                }),
+              }
+            );
+
+            const reservationData = await reservationResponse.json();
+
+            if (!reservationResponse.ok) {
+              throw new Error(reservationData.msg || "Reservation failed");
+            }
+
+            setShowSuccess(true);
+            setStartDate(null);
+            setEndDate(null);
+            setGuestCount(1);
+          } catch (err) {
+            setError(err.message || "Failed to complete reservation");
+          }
+        },
+        modal: {
+          ondismiss: () => {
+            setIsLoading(false);
+          },
+        },
+        prefill: {
+          name: "Guest",
+          email: "guest@example.com",
+        },
+        theme: {
+          color: "#fd5f7c",
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleReservation = async () => {
     if (!startDate || !endDate) {
@@ -143,36 +257,16 @@ export const PaymentDetailsCard = ({ data, propertyId }) => {
 
     setIsLoading(true);
     setError("");
+
+    const nights = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+    const totalPrice = nights * data.price;
+
     try {
-      const nights = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
-      const totalPrice = nights * data.price;
-      const token = localStorage.getItem("authToken");
-      const response = await fetch(`${backendUrl}/reservations/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          startDate,
-          endDate,
-          totalPrice,
-          listingId: propertyId,
-          guestCount,
-        }),
-      });
-      console.log(response.status);
-      if (!response.ok) {
-        throw new Error(await response.text());
-      }
-      setShowSuccess(true);
-      setStartDate(null);
-      setEndDate(null);
-      setGuestCount(1);
+      await handlePayment(totalPrice);
     } catch (err) {
-      setError(err.message || "Failed to create reservation");
-    } finally {
+      setError("Payment failed");
       setIsLoading(false);
+      console.log(err);
     }
   };
 
@@ -245,7 +339,9 @@ export const PaymentDetailsCard = ({ data, propertyId }) => {
               <span className="w-8 text-center">{guestCount}</span>
               <button
                 className="px-3 py-1 border rounded hover:bg-gray-100"
-                onClick={() => setGuestCount(guestCount + 1)}
+                onClick={() =>
+                  setGuestCount(Math.min(data.guestCount || 10, guestCount + 1))
+                }
               >
                 +
               </button>

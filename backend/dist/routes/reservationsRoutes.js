@@ -19,14 +19,16 @@ const prisma_1 = require("../db/prisma");
 const types_1 = require("../types/types");
 const razorpay_1 = __importDefault(require("razorpay"));
 const crypto_1 = __importDefault(require("crypto"));
-exports.reservationRoutes = (0, express_1.Router)();
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
+exports.reservationRoutes = (0, express_1.Router)();
 const razorpay = new razorpay_1.default({
     key_id: process.env.RAZORPAY_KEY_ID,
     key_secret: process.env.RAZORPAY_KEY_SECRET
 });
-// Helper function to get filtered reservations
+const generateReceiptId = () => {
+    return `bk${Date.now().toString().slice(-8)}${Math.random().toString(36).slice(-4)}`;
+};
 const getHostReservations = (userId, filter) => __awaiter(void 0, void 0, void 0, function* () {
     const now = new Date();
     const whereClause = Object.assign(Object.assign({ listing: {
@@ -53,25 +55,9 @@ const getHostReservations = (userId, filter) => __awaiter(void 0, void 0, void 0
         }
     });
 });
-exports.reservationRoutes.get("/host", authMiddleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = req.userId;
-    const filter = req.query.filter;
-    if (!userId) {
-        res.status(401).json({ msg: "Unauthorized" });
-        return;
-    }
-    try {
-        const reservations = yield getHostReservations(userId, filter);
-        res.status(200).json({ reservations });
-        return;
-    }
-    catch (error) {
-        console.error("Error fetching host reservations:", error);
-        res.status(500).json({ msg: "Error fetching reservations" });
-        return;
-    }
-}));
+// Create payment
 exports.reservationRoutes.post("/create-payment", authMiddleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const userId = req.userId;
     if (!userId) {
         res.status(401).json({ msg: "Unauthorized" });
@@ -83,11 +69,11 @@ exports.reservationRoutes.post("/create-payment", authMiddleware_1.middleware, (
             res.status(400).json({ msg: "Invalid reservation data" });
             return;
         }
-        const { totalPrice, listingId } = parseData.data;
+        const { totalPrice } = parseData.data;
         const orderOptions = {
-            amount: Math.round(totalPrice * 100), // Convert to paise
+            amount: Math.round(totalPrice * 100),
             currency: 'INR',
-            receipt: `booking_${Date.now()}_${userId}`,
+            receipt: generateReceiptId(),
             payment_capture: 1
         };
         const order = yield razorpay.orders.create(orderOptions);
@@ -101,11 +87,18 @@ exports.reservationRoutes.post("/create-payment", authMiddleware_1.middleware, (
     }
     catch (error) {
         console.error("Payment initiation error:", error);
+        if ((_a = error.error) === null || _a === void 0 ? void 0 : _a.description) {
+            res.status(400).json({
+                msg: "Payment initialization failed",
+                error: error.error.description
+            });
+            return;
+        }
         res.status(500).json({ msg: "Error creating payment" });
         return;
     }
 }));
-//yesma mah payment verification garey pachi ballaa added the reservation 
+// Create reservation
 exports.reservationRoutes.post("/create", authMiddleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.userId;
     if (!userId) {
@@ -127,7 +120,6 @@ exports.reservationRoutes.post("/create", authMiddleware_1.middleware, (req, res
             res.status(400).json({ msg: "Invalid payment signature" });
             return;
         }
-        // Check if the listing exists
         const listing = yield prisma_1.prisma.listing.findUnique({
             where: { id: listingId }
         });
@@ -135,7 +127,6 @@ exports.reservationRoutes.post("/create", authMiddleware_1.middleware, (req, res
             res.status(404).json({ msg: "Listing not found" });
             return;
         }
-        // Check if the dates are available
         const existingReservation = yield prisma_1.prisma.reservation.findFirst({
             where: {
                 listingId,
@@ -159,7 +150,6 @@ exports.reservationRoutes.post("/create", authMiddleware_1.middleware, (req, res
             res.status(400).json({ msg: "Property is not available for these dates" });
             return;
         }
-        // Check if guest count is within property limit
         if (guestCount > listing.guestCount) {
             res.status(400).json({
                 msg: `Guest count exceeds property limit of ${listing.guestCount} guests`
@@ -179,6 +169,7 @@ exports.reservationRoutes.post("/create", authMiddleware_1.middleware, (req, res
             }
         });
         res.status(200).json({ reservation });
+        return;
     }
     catch (error) {
         console.error("Reservation creation error:", error);
@@ -186,8 +177,26 @@ exports.reservationRoutes.post("/create", authMiddleware_1.middleware, (req, res
         return;
     }
 }));
-// yo ta user side ko mah tesko specifi reservation dekauna lai ho 
-//yeti ho ki mailey yesma filter i mean query hanu parcha if all ho vaney no need to send any params or else send current and upcoming and filter from background and give response 
+// Get host reservations
+exports.reservationRoutes.get("/host", authMiddleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.userId;
+    const filter = req.query.filter;
+    if (!userId) {
+        res.status(401).json({ msg: "Unauthorized" });
+        return;
+    }
+    try {
+        const reservations = yield getHostReservations(userId, filter);
+        res.status(200).json({ reservations });
+        return;
+    }
+    catch (error) {
+        console.error("Error fetching host reservations:", error);
+        res.status(500).json({ msg: "Error fetching reservations" });
+        return;
+    }
+}));
+// Get user reservations
 exports.reservationRoutes.get("/user", authMiddleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.userId;
     if (!userId) {
@@ -210,46 +219,7 @@ exports.reservationRoutes.get("/user", authMiddleware_1.middleware, (req, res) =
         return;
     }
 }));
-// Get all reservations for a host's properties guest ko booking manage garna lai use garney yo route chai 
-// reservationRoutes.get(
-//   "/host",
-//   middleware,
-//   async (req: Request, res: Response) => {
-//     const userId = req.userId;
-//     if (!userId) {
-//        res.status(401).json({ msg: "Unauthorized" });
-//        return
-//     }
-//     try {
-//       const reservations = await prisma.reservation.findMany({
-//         where: {
-//           listing: {
-//             userId: userId
-//           }
-//         },
-//         include: {
-//           listing: true,
-//           user: {
-//             select: {
-//               id: true,
-//               firstName: true,
-//               lastName: true,
-//               email: true,
-//               image: true
-//             }
-//           }
-//         }
-//       });
-//        res.status(200).json({ reservations });
-//        return
-//     } catch (error) {
-//       console.error("Error fetching host reservations:", error);
-//        res.status(500).json({ msg: "Error fetching reservations" });
-//        return
-//     }
-//   }
-// );
-//Retrieves detailed information about a specific reservation
+// Get specific reservation
 exports.reservationRoutes.get("/:reservationId", authMiddleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.userId;
     const { reservationId } = req.params;
@@ -277,7 +247,6 @@ exports.reservationRoutes.get("/:reservationId", authMiddleware_1.middleware, (r
             res.status(404).json({ msg: "Reservation not found" });
             return;
         }
-        // Check if the user is either the guest or the host
         if (reservation.userId !== userId && reservation.listing.userId !== userId) {
             res.status(403).json({ msg: "Not authorized to view this reservation" });
             return;
@@ -291,8 +260,7 @@ exports.reservationRoutes.get("/:reservationId", authMiddleware_1.middleware, (r
         return;
     }
 }));
-// aaila ko lai both host and user can cancel reservation ani btw i think thats the best apporach cause same route can be used to do cancellation tas
-// from any type of user cause in frontend declining the reservation by host is same thing like cancellation okay i think thats the best apporach 
+// Cancel reservation
 exports.reservationRoutes.delete("/:reservationId", authMiddleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.userId;
     const { reservationId } = req.params;
@@ -309,7 +277,6 @@ exports.reservationRoutes.delete("/:reservationId", authMiddleware_1.middleware,
             res.status(404).json({ msg: "Reservation not found" });
             return;
         }
-        // Check if the user is either the guest or the host
         if (reservation.userId !== userId && reservation.listing.userId !== userId) {
             res.status(403).json({ msg: "Not authorized to cancel this reservation" });
             return;
@@ -318,7 +285,6 @@ exports.reservationRoutes.delete("/:reservationId", authMiddleware_1.middleware,
             where: { id: reservationId }
         });
         res.status(200).json({ msg: "Reservation cancelled successfully" });
-        return;
     }
     catch (error) {
         console.error("Error cancelling reservation:", error);
@@ -326,4 +292,4 @@ exports.reservationRoutes.delete("/:reservationId", authMiddleware_1.middleware,
         return;
     }
 }));
-///////////////////////////**************** */
+exports.default = exports.reservationRoutes;
