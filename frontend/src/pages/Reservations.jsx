@@ -6,10 +6,32 @@ import { useNavigate } from "react-router-dom";
 function Reservations() {
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deleteLoading, setDeleteLoading] = useState(null);
   const navigate = useNavigate();
+
   const handlePropertiesDetails = (id) => {
     navigate(`/propertyDetails/${id} `);
   };
+
+  const handleDeleteReservation = async (reservationId) => {
+    const token = localStorage.getItem("authToken");
+    setDeleteLoading(reservationId);
+
+    try {
+      await axios.delete(`${backendUrl}/reservations/${reservationId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // Update the local state by removing the deleted reservation
+      setReservations(reservations.filter((res) => res.id !== reservationId));
+    } catch (error) {
+      console.error("Error cancelling reservation:", error);
+      alert("Failed to cancel reservation. Please try again.");
+    } finally {
+      setDeleteLoading(null);
+    }
+  };
+
   useEffect(() => {
     const fetchReservations = async () => {
       const token = localStorage.getItem("authToken");
@@ -24,14 +46,12 @@ function Reservations() {
         setLoading(false);
       }
     };
-
     fetchReservations();
   }, []);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <h1 className="text-2xl font-semibold mb-8">Your trips</h1>
-
       {loading ? (
         <div className="text-center py-12">Loading...</div>
       ) : (
@@ -70,7 +90,7 @@ function Reservations() {
                       {reservation.listing.locationName}
                     </p>
                   </div>
-                  <div className="mt-4">
+                  <div className="mt-4 flex gap-4 items-center">
                     <button
                       onClick={() =>
                         handlePropertiesDetails(reservation.listingId)
@@ -79,12 +99,24 @@ function Reservations() {
                     >
                       View details
                     </button>
+                    <button
+                      onClick={() => handleDeleteReservation(reservation.id)}
+                      disabled={deleteLoading === reservation.id}
+                      className={`text-sm px-4 py-2 rounded-md ${
+                        deleteLoading === reservation.id
+                          ? "bg-gray-300 cursor-not-allowed"
+                          : "bg-red-500 text-white hover:bg-red-600"
+                      }`}
+                    >
+                      {deleteLoading === reservation.id
+                        ? "Cancelling..."
+                        : "Cancel reservation"}
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
           ))}
-
           {reservations.length === 0 && (
             <div className="text-center py-12 text-gray-500">
               No trips booked yet
