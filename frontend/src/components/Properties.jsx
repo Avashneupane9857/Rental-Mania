@@ -100,6 +100,10 @@ const PropertyCard = ({ property }) => {
       <div className="mt-3">
         <h1 className="font-medium">{property.locationName}</h1>
         <h1 className="text-slate-500 font-thin mt-1">{property.category}</h1>
+        <h1>
+          {" "}
+          <span> 1- {property.guestCount} People</span>
+        </h1>
         <div className="flex font-semibold mt-1 gap-1 items-center">
           <span className="font-normal">₹</span>
           <span className="font-normal">{property.price.toLocaleString()}</span>
