@@ -249,7 +249,7 @@ exports.propertyRoutes.put("/:propertyId", upload.array("images"), authMiddlewar
             return;
         }
         let finalImageUrls = imagesToKeep ? JSON.parse(imagesToKeep) : [];
-        const imagesToDelete = existingProperty.imageSrc.filter(url => !finalImageUrls.includes(url));
+        const imagesToDelete = existingProperty.imageSrc.filter((url) => !finalImageUrls.includes(url));
         for (const imageUrl of imagesToDelete) {
             const key = imageUrl.split('/').pop();
             try {

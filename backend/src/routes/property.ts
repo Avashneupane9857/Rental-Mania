@@ -311,7 +311,7 @@ propertyRoutes.put(
 
      
       const imagesToDelete = existingProperty.imageSrc.filter(
-        url => !finalImageUrls.includes(url)
+        (url: string) => !finalImageUrls.includes(url)
       );
 
       for (const imageUrl of imagesToDelete) {
