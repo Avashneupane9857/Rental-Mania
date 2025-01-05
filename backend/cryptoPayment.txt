@@ -1,0 +1,15 @@
+Payment Flow:
+
+User clicks "Pay with Crypto"
+Backend creates a charge with Coinbase Commerce
+User is redirected to Coinbase's checkout page
+User completes payment using their preferred crypto
+Coinbase sends webhook notifications about payment status
+Your system updates booking status based on webhook events
+
+
+Setup Requirements:
+
+Create a Coinbase Commerce account
+Get API keys from the Settings → API keys section
+Set up webhook endpoints in the Coinbase Commerce dashboard
