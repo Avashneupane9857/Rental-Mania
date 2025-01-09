@@ -90,7 +90,7 @@ function LoginPage() {
         </form>
         <a href="/signup">
           Dont have an account ?
-          <button className="text-red-600">Create an account</button>
+          <button className="text-red-600">Create an new account</button>
         </a>
       </div>
     </div>
