@@ -27,9 +27,7 @@ function LoginPage() {
       }
     } catch (error) {
       console.error("Error during login:", error);
-      setErrorMessage(
-        error.response?.data?.message || "Login failed. Please try again."
-      );
+      setErrorMessage(error.response?.data?.message || "Login failed. ");
     }
   };
 
