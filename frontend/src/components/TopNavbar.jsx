@@ -78,10 +78,10 @@ const TopNavbar = () => {
                 Reservations
               </a>
               <a
-                href="/settings"
+                href="/messages"
                 className="block px-4 py-2 text-gray-800 hover:bg-gray-100 transition-colors"
               >
-                Settings
+                Messages
               </a>
               {/* Mobile: Show hosting button in dropdown */}
               <button
