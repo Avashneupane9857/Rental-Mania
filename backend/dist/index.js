@@ -27,11 +27,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const http_1 = require("http");
 const auth_1 = require("./routes/auth");
 const property_1 = require("./routes/property");
+const reservationsRoutes_1 = require("./routes/reservationsRoutes");
+const ws_1 = require("ws");
 const dotenv = __importStar(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
-const reservationsRoutes_1 = require("./routes/reservationsRoutes");
+const chatHandler_1 = require("./websocket/chatHandler");
 dotenv.config();
 const corsOptions = {
     origin: ["http://localhost:5173", "http://localhost:5174", "https://your-frontend-domain.com"],
@@ -40,9 +43,10 @@ const corsOptions = {
     credentials: true,
 };
 const app = (0, express_1.default)();
+const server = (0, http_1.createServer)(app);
+const wss = new ws_1.WebSocketServer({ server });
 app.use((0, cors_1.default)(corsOptions));
 app.use(express_1.default.static('public'));
-const port = process.env.PORT;
 app.use(express_1.default.json());
 app.get("/", (req, res) => {
     res.send("server is running");
@@ -50,6 +54,8 @@ app.get("/", (req, res) => {
 app.use("/auth", auth_1.authroutes);
 app.use("/property", property_1.propertyRoutes);
 app.use("/reservations", reservationsRoutes_1.reservationRoutes);
-app.listen(port, () => {
-    console.log(`server running in ${port}`);
+wss.on('connection', chatHandler_1.handleWebSocket);
+const port = process.env.PORT || 5000;
+server.listen(port, () => {
+    console.log(`server running on port ${port}`);
 });

@@ -37,7 +37,7 @@ app.use("/reservations", reservationRoutes);
 
 wss.on('connection', handleWebSocket);
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT 
 
 server.listen(port, () => {
     console.log(`server running on port ${port}`);
