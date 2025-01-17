@@ -33,6 +33,7 @@ model User {
   reviews          Review[]
   // User ley fav garna milcha properties lai 
   favoriteListings Listing[]     @relation("FavoriteListings")
+  Message          Message[]
 }
 
 model Listing {
@@ -78,10 +79,11 @@ model Reservation {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   listingId     String
-  listing       Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  listing       Listing   @relation(fields: [listingId], references: [id], onDelete: Cascade)
   paymentId     String?
   orderId       String?
-  paymentStatus String  @default("pending")
+  paymentStatus String    @default("pending")
+  ChatRoom      ChatRoom?
 
   @@index([userId])
   @@index([listingId])
@@ -103,6 +105,29 @@ model Review {
 
   @@index([userId])
   @@index([listingId])
+}
+
+// chats ko schema
+model ChatRoom {
+  id            String      @id @default(cuid())
+  hostId        String
+  guestId       String
+  reservationId String      @unique
+  reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+  messages      Message[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Message {
+  id         String   @id @default(cuid())
+  content    String
+  senderId   String
+  sender     User     @relation(fields: [senderId], references: [id])
+  chatRoomId String
+  chatRoom   ChatRoom @relation(fields: [chatRoomId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 //enum for category

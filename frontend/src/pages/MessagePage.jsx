@@ -32,7 +32,6 @@ const MessagePage = () => {
 
   return (
     <div className="flex h-screen bg-white">
-      {/* Left Sidebar */}
       <div className="w-96 border-r">
         <div className="p-4">
           <div className="flex items-center justify-between mb-4">
@@ -91,7 +90,6 @@ const MessagePage = () => {
           </div>
         </div>
 
-        {/* Message List */}
         <div className="overflow-y-auto">
           {messages.map((msg) => (
             <div key={msg.id} className="p-4 hover:bg-gray-50 cursor-pointer">
@@ -116,7 +114,6 @@ const MessagePage = () => {
         </div>
       </div>
 
-      {/* Main Chat Area */}
       <div className="flex-1 flex flex-col">
         <div className="border-b p-4">
           <div className="flex items-center justify-between">
@@ -137,7 +134,6 @@ const MessagePage = () => {
           </div>
         </div>
 
-        {/* Messages Container */}
         <div className="flex-1 overflow-y-auto p-4">
           {messages.map((msg) => (
             <div key={msg.id} className="mb-4">
@@ -160,7 +156,6 @@ const MessagePage = () => {
           ))}
         </div>
 
-        {/* Message Input */}
         <div className="border-t p-4">
           <div className="flex items-center gap-2 border rounded-lg p-3">
             <button className="p-2 hover:bg-gray-100 rounded-full">
