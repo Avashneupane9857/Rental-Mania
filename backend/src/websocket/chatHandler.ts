@@ -5,12 +5,11 @@ import { Request } from "express";
 const secretKey = process.env.JWT_SECRET || "";
 const wss = new WebSocket.Server({ port: 8080 });
 
-console.log('WebSocket server is running on ws://localhost:8080');
 
 wss.on('connection', (ws, req: Request) => {
     console.log('New client connected');
 
-    const token = req.url?.split('token=')[1]; // Use optional chaining to prevent undefined errors
+    const token = req.url?.split('token=')[1]; 
 
     if (!token) {
         ws.send('No token provided');
@@ -19,7 +18,7 @@ wss.on('connection', (ws, req: Request) => {
     }
 
     try {
-        const decoded = jwt.verify(token, secretKey) as JwtPayload; // Explicitly cast to JwtPayload
+        const decoded = jwt.verify(token, secretKey) as JwtPayload; 
 
         if (!decoded.username) {
             throw new Error("Invalid token: username missing");
