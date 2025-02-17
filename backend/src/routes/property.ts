@@ -143,7 +143,7 @@ propertyRoutes.get(
 );
 propertyRoutes.get(
   "/:propertyId",
-  middleware,
+  
   async (req: Request, res: Response) => {
     const { propertyId } = req.params;
     if (!propertyId) {
@@ -168,7 +168,7 @@ propertyRoutes.get(
   }
 );
 
-propertyRoutes.get("/", middleware, async (req: Request, res: Response) => {
+propertyRoutes.get("/",  async (req: Request, res: Response) => {
   const property = await prisma.listing.findMany();
   if (!property) {
     res.status(400).json({ msg: "something worng" });
