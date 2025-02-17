@@ -6,7 +6,7 @@ import { reservationRoutes } from "./routes/reservationsRoutes";
 import { WebSocketServer } from 'ws';
 import * as dotenv from 'dotenv';
 import cors from "cors";
-import { handleWebSocket } from "./websocket/chatHandler";
+
 
 dotenv.config();
 
@@ -35,7 +35,7 @@ app.use("/property", propertyRoutes);
 app.use("/reservations", reservationRoutes);
 
 
-wss.on('connection', handleWebSocket);
+// wss.on('connection', handleWebSocket);
 
 const port = process.env.PORT 
 
