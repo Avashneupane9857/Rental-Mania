@@ -29,7 +29,7 @@ function AList() {
               </th>
               <td className="px-6 py-4">Silver</td>
               <td className="px-6 py-4">Laptop</td>
-              <td className="px-6 py-4">$2999</td>
+              <td className="px-6 py-4">$hahah9</td>
             </tr>
             <tr className="bg-white border-b  dark:border-gray-700">
               <th
