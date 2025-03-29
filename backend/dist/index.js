@@ -34,10 +34,9 @@ const reservationsRoutes_1 = require("./routes/reservationsRoutes");
 const ws_1 = require("ws");
 const dotenv = __importStar(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
-const chatHandler_1 = require("./websocket/chatHandler");
 dotenv.config();
 const corsOptions = {
-    origin: ["http://localhost:5173", "http://localhost:5174", "https://your-frontend-domain.com"],
+    origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -54,8 +53,8 @@ app.get("/", (req, res) => {
 app.use("/auth", auth_1.authroutes);
 app.use("/property", property_1.propertyRoutes);
 app.use("/reservations", reservationsRoutes_1.reservationRoutes);
-wss.on('connection', chatHandler_1.handleWebSocket);
-const port = process.env.PORT || 5000;
+// wss.on('connection', handleWebSocket);
+const port = process.env.PORT;
 server.listen(port, () => {
     console.log(`server running on port ${port}`);
 });

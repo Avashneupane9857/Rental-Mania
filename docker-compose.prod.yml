@@ -31,7 +31,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - rental_mania-data:/var/lib/postgresql/data 
+      - rental_mania-datas:/var/lib/postgresql/data 
     networks:
       - app_network
 

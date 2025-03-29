@@ -125,7 +125,7 @@ exports.propertyRoutes.get("/filter/", authMiddleware_1.middleware, (req, res) =
         return;
     }
 }));
-exports.propertyRoutes.get("/:propertyId", authMiddleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.propertyRoutes.get("/:propertyId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { propertyId } = req.params;
     if (!propertyId) {
         res.status(400).json({
@@ -146,7 +146,7 @@ exports.propertyRoutes.get("/:propertyId", authMiddleware_1.middleware, (req, re
         property,
     });
 }));
-exports.propertyRoutes.get("/", authMiddleware_1.middleware, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.propertyRoutes.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const property = yield prisma_1.prisma.listing.findMany();
     if (!property) {
         res.status(400).json({ msg: "something worng" });
