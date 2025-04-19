@@ -1,0 +1,8 @@
+DevSecOps PipeLine Step Wise Step Guide :-
+
+1.Created IAM user with administration access and create access key (Keep access key and secret key safe)
+
+2. Now write all the necessary tf files according the req infrastructure, docker files, k8s Manifests, Jenkins pipeline(if u want to use from git repo)
+
+3. Now configure AWS CLI in ur local machine "aws configure" (Provide access key, secret key, region and all asked)
+
