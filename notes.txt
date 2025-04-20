@@ -6,3 +6,4 @@ DevSecOps PipeLine Step Wise Step Guide :-
 
 3. Now configure AWS CLI in ur local machine "aws configure" (Provide access key, secret key, region and all asked)
 
+4. 
